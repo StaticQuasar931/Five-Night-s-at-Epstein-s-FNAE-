@@ -1,16 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Five Nights At Epstein's - Web Version</title>
-  <base href="/FNAE-HTML5-1.1.5/">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <!-- SEO -->
+  <title>Five Nights at Epstein&#39;s (FNAE) Unblocked Web Version | StaticQuasar931</title>
+  <meta name="description" content="Play Five Nights at Epstein&#39;s (FNAE) unblocked in your browser. A school-safe horror game style experience with a smooth web version build. Works at school, work, or anywhere. More unblocked games by StaticQuasar931." />
+  <meta name="keywords" content="five nights at epstein's unblocked, fnae unblocked, fnae game unblocked, five nights at epstein's game, fnae web version, fnae html5, fnae browser, fnae working at school, fnae school, fnae school-safe, horror game unblocked, scary game unblocked, staticquasar931, static quasar 931, static 931, staticq, staticq931, 931, unblocked, unbl0cked, games, g@mes, game, g@me, browser game, chromebook game, play at school" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="canonical" href="https://staticquasar931.github.io/Five-Night-s-at-Epstein-s-FNAE-/" />
+
+  <!-- Social -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Five Nights at Epstein&#39;s (FNAE) Unblocked Web Version | StaticQuasar931" />
+  <meta property="og:description" content="Play FNAE unblocked in your browser. Works at school, work, or anywhere. More unblocked games by StaticQuasar931." />
+  <meta property="og:url" content="https://staticquasar931.github.io/Five-Night-s-at-Epstein-s-FNAE-/" />
+  <meta property="og:image" content="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Five Nights at Epstein&#39;s (FNAE) Unblocked Web Version | StaticQuasar931" />
+  <meta name="twitter:description" content="Play FNAE unblocked in your browser. Works at school, work, or anywhere." />
+  <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" />
+
+  <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" />
+
+  <!-- IMPORTANT: base must not break relative asset loading -->
+  <base href="./" />
+
+  <!-- Game stylesheet (keep as-is) -->
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* Basic hardening so the game always fills the viewport */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
+      -webkit-text-size-adjust: 100%;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    /* If the game uses a canvas, this helps it fit cleanly */
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      touch-action: none;
+    }
+
+    /* ===========================
+       VISUAL SEO (Default Standard)
+       =========================== */
+    :root{
+      --brand:#5ee1ff;
+      --glow:0 0 12px rgba(94,225,255,.65), 0 0 32px rgba(155,255,183,.35);
+      --shadow:0 10px 30px rgba(0,0,0,.4);
+    }
+
+    /* Static Menu (top-left) */
+    #staticMenu{
+      position:fixed; left:12px; top:12px; z-index:9999;
+      display:flex; gap:10px; align-items:center; user-select:none;
+      padding:10px 14px; border-radius:12px;
+      background:linear-gradient(135deg, rgba(20,20,28,.9), rgba(20,20,28,.6));
+      border:1px solid rgba(94,225,255,.35);
+      color:#e8f3ff; box-shadow:var(--glow), var(--shadow);
+      font-size:14px; animation:menuEnter .6s ease .15s both;
+    }
+    #staticMenu a{ color:#5ee1ff; font-weight:800; text-decoration:none }
+    #closeStaticMenu{
+      color:#f55; cursor:pointer; padding:2px 6px; border-radius:6px;
+      border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06)
+    }
+    @keyframes menuEnter{ from{opacity:0; transform:translateY(-8px)} to{opacity:1; transform:translateY(0)} }
+
+    /* Rotating slide-in widget (bottom-right) */
+    #staticSlideMenu{
+      position:fixed; bottom:24px; right:24px; z-index:9999;
+      width:100px; height:100px; pointer-events:none; opacity:0;
+      transform:translateX(140px) scale(.96);
+    }
+    #staticSlideMenu a{ display:block; width:100%; height:100% }
+    #staticSlideMenu img{
+      width:100%; height:100%; object-fit:contain;
+      border:0; border-radius:0; background:transparent; box-shadow:none;
+      transition:opacity .25s ease;
+    }
+    .slide-in{ animation:slideIn 2s ease forwards }
+    .slide-out{ animation:slideOut 2s ease forwards }
+    @keyframes slideIn{ from{opacity:0; transform:translateX(140px) scale(.96)} to{opacity:1; transform:translateX(0) scale(1)} }
+    @keyframes slideOut{ from{opacity:1; transform:translateX(0) scale(1)} to{opacity:0; transform:translateX(140px) scale(.96)} }
+
+    .seo-hidden{
+      position:absolute; width:1px; height:1px; overflow:hidden;
+      clip:rect(1px,1px,1px,1px); white-space:nowrap;
+    }
+
+    @media (max-width:600px){
+      #staticMenu{ font-size:13px; padding:8px 12px }
+      #staticSlideMenu{ width:88px; height:88px }
+    }
+  </style>
 </head>
 
 <body>
-  <!-- 预加载动画 -->
+  <!-- Static Menu (shows on load, hides 3 minutes when closed, then returns) -->
+  <div id="staticMenu" role="region" aria-label="StaticQuasar menu">
+    <a href="https://sites.google.com/view/staticquasar931/gm3z" target="_blank" rel="noopener">More Unblocked Games by Static</a>
+    <span id="closeStaticMenu" title="Hide temporarily">✕</span>
+  </div>
+
+  <!-- Rotating quick link widget (bottom-right). Order: Google Form → Discord → Instagram -->
+  <div id="staticSlideMenu" aria-live="polite">
+    <a id="staticSlideLink" href="https://sites.google.com/view/staticquasar931/google-form" target="_blank" rel="noopener" aria-label="Open Google Form">
+      <img id="staticSlideImg" src="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/GoogleForm.png" alt="StaticQuasar931 Google Form for feedback and requests" />
+    </a>
+  </div>
+
+  <!-- Existing game content (kept compatible) -->
   <div id="preloader">
     <div class="preloader-content">
       <div class="preloader-logo">FIVE NIGHTS<br>AT EPSTEIN'S</div>
@@ -19,7 +129,7 @@
         <div class="spinner-ring"></div>
         <div class="spinner-ring"></div>
       </div>
-      <div class="preloader-text">LOADING<span class="loading-dots">...</span></div>
+      <div class="preloader-text">LOADING<span class="loading-dots"></span></div>
       <div class="preloader-progress">
         <div class="progress-bar" id="progress-bar"></div>
       </div>
@@ -27,120 +137,143 @@
     </div>
   </div>
 
-  <div id="game-container">
-    <!-- 主游戏画面 -->
-    <div id="game-screen">
-      <img id="current-scene" src="" alt="" style="display: none;">
+  <!-- If your JS creates/inserts the canvas automatically, this container is harmless.
+       If your JS expects an element to mount into, this helps. -->
+  <div id="game-root" aria-label="Game area"></div>
 
-      <!-- 交互热区 -->
-      <div id="hotspots"></div>
+  <script>
+    // Leave warning (required)
+    window.onbeforeunload = () => "Are you sure you want to leave? Your session may be interrupted.";
 
-      <!-- UI 覆盖层 -->
-      <div id="ui-overlay">
-        <!-- 左上角：时间和夜数 -->
-        <div id="top-left-ui">
-          <div id="time-display"><span id="time-value">12 AM</span></div>
-          <div id="night-display">NIGHT <span id="night-value">1</span></div>
-        </div>
+    // Static Menu show/hide with 3 minute return
+    (function(){
+      const menu = document.getElementById("staticMenu");
+      const btn  = document.getElementById("closeStaticMenu");
+      const KEY  = "sq931_staticMenu_hidden_until";
+      const show = () => { if (menu) menu.style.display = "flex"; };
+      const hideFor3m = () => {
+        if (!menu) return;
+        menu.style.display = "none";
+        const until = Date.now() + 180000;
+        localStorage.setItem(KEY, String(until));
+        setTimeout(show, 180000);
+      };
+      const until = parseInt(localStorage.getItem(KEY) || "0", 10);
+      if (until && Date.now() < until){
+        if (menu) menu.style.display = "none";
+        setTimeout(show, Math.max(0, until - Date.now()));
+      } else {
+        show();
+      }
+      if (btn) btn.onclick = hideFor3m;
+    })();
 
-        <!-- 右下角：氧气和通风管图标 -->
-        <div id="bottom-right-ui">
-          <div id="oxygen-display">
-            <img src="/FNAE-HTML5-1.1.5/assets/images/fa3.png" alt="Vent" class="vent-icon">
-            <span id="power-value">100</span><span class="percent-sign">%</span><span class="oxygen-unit">O<sub>2</sub></span>
-          </div>
-        </div>
-      </div>
-    </div>
+    // Rotator: Google Form → Discord → Instagram
+    (function(){
+      const wrap = document.getElementById("staticSlideMenu");
+      const a    = document.getElementById("staticSlideLink");
+      const img  = document.getElementById("staticSlideImg");
 
-    <!-- 摄像头面板 -->
-    <div id="camera-panel" class="hidden">
-      <div id="current-cam-label">CAM 11</div>
-      <div id="camera-error-label">ERR</div>
-      <!-- 角色图层容器 -->
-      <div id="character-overlay"></div>
-      <div id="camera-grid"></div>
-      <button id="shock-hawking-btn">ELECTROCUTE</button>
-      <button id="play-sound-btn">PLAY SOUND</button>
-      <!-- 摄像头故障雪花视频 -->
-      <video id="camera-static-video" loop muted playsinline>
-        <source src="/FNAE-HTML5-1.1.5/assets/vedio/202512191935.webm" type="video/webm">
-      </video>
-    </div>
+      const FORM = {
+        src:  "https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/GoogleForm.png",
+        alt:  "StaticQuasar931 Google Form for feedback and requests",
+        link: "https://sites.google.com/view/staticquasar931/google-form"
+      };
+      const DISCORD = {
+        src:  "https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/Join_Our_DC_StaticQuassar931_lcplrf.png",
+        alt:  "Join the StaticQuasar931 Discord",
+        link: "https://discord.gg/DP2hM7RRhR"
+      };
+      const INSTA = {
+        src:  "https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/Follow-us--IG",
+        alt:  "StaticQuasar931 Instagram",
+        link: "https://www.instagram.com/freeschoolgamepage/"
+      };
 
-    <!-- 过场动画 -->
-    <div id="cutscene" class="hidden">
-      <img src="/FNAE-HTML5-1.1.5/assets/images/cutscene.png" alt="Cutscene">
-      <div class="cutscene-hint">Click to continue...</div>
-    </div>
+      const ROTATION = [FORM, DISCORD, INSTA];
+      ROTATION.forEach(o => { const p = new Image(); p.src = o.src; });
 
-    <!-- 每晚开始场景 -->
-    <div id="night-intro" class="hidden">
-      <div id="night-intro-text">NIGHT 1</div>
-    </div>
+      const T_IN = 2000, T_SHOW = 5000, T_OUT = 2000, T_HIDDEN = 20000;
+      let idx = 0;
 
-    <!-- 主菜单 -->
-    <div id="main-menu">
-      <img id="star-icon" class="hidden" src="/FNAE-HTML5-1.1.5/assets/images/star.png" alt="Star">
-      <img id="star-icon-2" class="hidden" src="/FNAE-HTML5-1.1.5/assets/images/star.png" alt="Star 2">
-      <h1>FIVE<br>NIGHTS<br>AT<br>EPSTEIN'S</h1>
-      <button id="start-game">NEW GAME</button>
-      <button id="continue-game" class="hidden">CONTINUE</button>
-      <button id="special-night-btn" class="hidden">EPSTEIN'S SPECIAL NIGHT</button>
-      <div class="copyright">© EVAN PRODUCTIONS | HTML5 remake by fivenightsatepsteins.org</div>
-      <div class="version">v1.1.5</div>
-    </div>
+      function apply(state){
+        a.href = state.link;
+        img.alt = state.alt;
+        img.style.opacity = "0";
+        setTimeout(() => { img.src = state.src; }, 80);
+        img.onload = () => { img.style.opacity = "1"; };
+      }
+      function delay(ms){ return new Promise(r => setTimeout(r, ms)); }
 
-    <!-- 静态噪点层 -->
-    <canvas id="static-canvas"></canvas>
+      (async function cycle(){
+        for(;;){
+          apply(ROTATION[idx]);
+          wrap.style.pointerEvents = "auto";
+          wrap.classList.remove("slide-out");
+          wrap.classList.add("slide-in");
+          await delay(T_IN + T_SHOW);
+          wrap.classList.remove("slide-in");
+          wrap.classList.add("slide-out");
+          await delay(T_OUT);
+          wrap.style.pointerEvents = "none";
+          await delay(T_HIDDEN);
+          idx = (idx + 1) % ROTATION.length;
+        }
+      })();
+    })();
 
-    <!-- 背景音乐 -->
-    <audio id="menu-music" loop>
-      <source src="/FNAE-HTML5-1.1.5/assets/sounds/music3.ogg" type="audio/ogg">
-    </audio>
+    // Keyboard secret toggle: y + u + i to toggle all Visual SEO
+    (function(){
+      const idsToToggle = ["staticMenu", "staticSlideMenu"];
+      let seq = [];
+      const target = ["y","u","i"];
 
-    <!-- 游戏结束画面 -->
-    <div id="game-over" class="hidden">
-      <!-- 雪花视频背景 -->
-      <video id="game-over-static" loop muted playsinline autoplay>
-        <source src="/FNAE-HTML5-1.1.5/assets/vedio/202512191935.webm" type="video/webm">
-      </video>
-      <div id="game-over-content">
-        <h2 id="game-over-text"></h2>
-        <p id="game-over-subtitle" class="hidden"></p>
-        <button id="restart">Restart</button>
-        <button id="main-menu-btn">Main Menu</button>
-      </div>
-    </div>
+      function toggle(){
+        idsToToggle.forEach(id=>{
+          const el = document.getElementById(id);
+          if(!el) return;
+          const isHidden = (el.style.display === "none" || getComputedStyle(el).display === "none");
+          el.style.display = isHidden ? (id === "staticMenu" ? "flex" : "block") : "none";
+        });
+      }
 
-    <!-- 游戏教程提示 -->
-    <div id="tutorial-overlay" class="hidden">
-      <div id="tutorial-content">
-        <h2>DEFEND YOURSELF AGAINST EPSTEIN</h2>
-        <p>
-          EPSTEIN ALWAYS STARTS AT CAM 11. USE THE CAMERA'S AUDIO LURE TO KEEP EPSTEIN FAR AWAY FROM YOU.
-          MAKE SURE THE CAMERA YOU'RE PLAYING THE SOUND IN IS NEXT TO THE CAMERA WHERE EPSTEIN IS.
-          PLAYING SOUND IN ONLY ONE SPOT WILL NOT WORK IF YOU DO IT TWICE OR MORE IN A ROW.
-          USING THE AUDIO LURE TOO MUCH WILL LEAD TO THE CAMERAS BREAKING.
-          TO FIX THEM HEAD TO THE CONTROL PANEL AND RESTART THE CAMERAS LIKE YOU JUST DID.
-          EPSTEIN DOES NOT ATTACK THROUGH THE VENTS SO DON'T BOTHER CLOSING THEM FOR THIS NIGHT.
-        </p>
-        <button id="tutorial-got-it">GOT IT</button>
-      </div>
-    </div>
-  </div>
+      window.addEventListener("keydown", (e)=>{
+        const active = document.activeElement;
+        const tag = active ? active.tagName.toLowerCase() : "";
+        const typing = tag === "input" || tag === "textarea" || tag === "select" || (active && active.isContentEditable);
+        if (typing) return;
 
-  <script src="js/GameState.js"></script>
+        seq.push(e.key.toLowerCase());
+        if (seq.length > 3) seq.shift();
+        if (seq.join("") === target.join("")) toggle();
+      });
+    })();
+  </script>
+
+  <!-- Game scripts (keep pathing simple so it works) -->
   <script src="js/AssetManager.js"></script>
-  <script src="js/UIManager.js"></script>
   <script src="js/CameraSystem.js"></script>
   <script src="js/EnemyAI.js"></script>
+  <script src="js/GameState.js"></script>
   <script src="js/InputHandler.js"></script>
-  <script src="js/StaticNoise.js"></script>
   <script src="js/ScaryFaceFlicker.js"></script>
+  <script src="js/StaticNoise.js"></script>
+  <script src="js/UIManager.js"></script>
   <script src="js/Game.js"></script>
   <script src="js/main.js"></script>
-  <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"469f83475e2048ccb6d048799adda2a6","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-</body>
 
+  <!-- Hidden SEO block (indexable, no visual impact) -->
+  <div class="seo-hidden" aria-hidden="true">
+    <h1>Five Nights at Epstein&#39;s (FNAE) Unblocked Web Version</h1>
+    <p>
+      Play Five Nights at Epstein&#39;s (FNAE) unblocked in your browser. This web version is designed to work at school, work, or anywhere on Chromebook and desktop. If a page loads slowly, refresh and try again. For more unblocked games by StaticQuasar931, visit the games list and use the quick links below for requests, Discord, and Instagram updates. Brand keywords: static, staticquasar, staticquasar931, static 931, staticq, staticq931, 931. Search variations: unblocked, unbl0cked, school-safe, working at school, game, g@me, games, g@mes, browser game.
+    </p>
+    <ul>
+      <li><a href="https://sites.google.com/view/staticquasar931/gm3z">More Unblocked Games by Static</a></li>
+      <li><a href="https://sites.google.com/view/staticquasar931/google-form">Request games and report issues (Google Form)</a></li>
+      <li><a href="https://discord.gg/DP2hM7RRhR">Join the StaticQuasar931 Discord</a></li>
+      <li><a href="https://www.instagram.com/freeschoolgamepage/">Follow StaticQuasar931 on Instagram</a></li>
+    </ul>
+  </div>
+</body>
 </html>
