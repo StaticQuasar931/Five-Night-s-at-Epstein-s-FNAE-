@@ -25,8 +25,7 @@
 
   <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" />
 
-  <!-- Keep NO <base> so all relative paths resolve correctly on GitHub Pages -->
-  <link rel="stylesheet" href="style.css" />
+  <!-- IMPORTANT: style.css does NOT exist in this repo, so do not link it (prevents 404 spam) -->
 
   <style>
     html, body{
@@ -39,7 +38,78 @@
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
 
-    /* Game mount and input surface required by InputHandler.js */
+    /* Minimal preloader styling so it is not unstyled (since style.css is missing) */
+    #preloader{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#000;
+      z-index:50;
+    }
+    .preloader-content{
+      text-align:center;
+      color:#eaf4ff;
+      width:min(520px, 92vw);
+    }
+    .preloader-logo{
+      font-weight:900;
+      letter-spacing:2px;
+      line-height:1.05;
+      font-size:28px;
+      margin-bottom:14px;
+      text-shadow:0 0 18px rgba(94,225,255,.25);
+    }
+    .preloader-spinner{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      margin:14px 0 10px;
+    }
+    .spinner-ring{
+      width:12px;
+      height:12px;
+      border-radius:999px;
+      background:rgba(94,225,255,.9);
+      animation:pulse 1s infinite ease-in-out;
+    }
+    .spinner-ring:nth-child(2){ animation-delay:.15s; opacity:.75 }
+    .spinner-ring:nth-child(3){ animation-delay:.3s; opacity:.55 }
+    @keyframes pulse{
+      0%, 100%{ transform:scale(.75) }
+      50%{ transform:scale(1.25) }
+    }
+    .preloader-text{
+      font-weight:800;
+      letter-spacing:1px;
+      font-size:13px;
+      opacity:.95;
+      margin-top:8px;
+    }
+    .preloader-progress{
+      width:100%;
+      height:10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.10);
+      overflow:hidden;
+      margin:14px 0 8px;
+    }
+    #progress-bar{
+      width:0%;
+      height:100%;
+      border-radius:999px;
+      background:linear-gradient(90deg, rgba(94,225,255,.95), rgba(155,255,183,.85));
+      transition:width .2s linear;
+    }
+    #preloader-percentage{
+      font-weight:900;
+      font-size:12px;
+      opacity:.9;
+    }
+
+    /* Main input surface the game expects (or will be aliased to) */
     #gameScreen{
       position:fixed;
       inset:0;
@@ -51,7 +121,7 @@
       display:block;
     }
 
-    /* Ensure any canvas fills the viewport visually */
+    /* Any canvas should visually fill the viewport */
     canvas{
       display:block;
       width:100vw;
@@ -108,32 +178,17 @@
     @media (max-width:600px){
       #staticMenu{ font-size:13px; padding:8px 12px }
       #staticSlideMenu{ width:88px; height:88px }
+      .preloader-logo{ font-size:24px }
     }
   </style>
 </head>
 
 <body>
-  <!-- Game input surface (required by InputHandler.js) -->
-  <div id="gameScreen" aria-label="Game screen"></div>
-
-  <!-- Static Menu (shows on load, hides 3 minutes when closed, then returns) -->
-  <div id="staticMenu" role="region" aria-label="StaticQuasar menu">
-    <a href="https://sites.google.com/view/staticquasar931/gm3z" target="_blank" rel="noopener">More Unblocked Games by Static</a>
-    <span id="closeStaticMenu" title="Hide temporarily">✕</span>
-  </div>
-
-  <!-- Rotating quick link widget (bottom-right). Order: Google Form → Discord → Instagram -->
-  <div id="staticSlideMenu" aria-live="polite">
-    <a id="staticSlideLink" href="https://sites.google.com/view/staticquasar931/google-form" target="_blank" rel="noopener" aria-label="Open Google Form">
-      <img id="staticSlideImg" src="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/GoogleForm.png" alt="StaticQuasar931 Google Form for feedback and requests" />
-    </a>
-  </div>
-
-  <!-- Preloader (kept) -->
+  <!-- Preloader (your game JS can hide this when ready) -->
   <div id="preloader">
     <div class="preloader-content">
-      <div class="preloader-logo">FIVE NIGHTS<br>AT EPSTEIN&#39;S</div>
-      <div class="preloader-spinner">
+      <div class="preloader-logo">FIVE NIGHTS<br />AT EPSTEIN&#39;S</div>
+      <div class="preloader-spinner" aria-hidden="true">
         <div class="spinner-ring"></div>
         <div class="spinner-ring"></div>
         <div class="spinner-ring"></div>
@@ -146,68 +201,103 @@
     </div>
   </div>
 
+  <!-- Game input surface (we also alias other expected IDs to this) -->
+  <div id="gameScreen" aria-label="Game screen"></div>
+
+  <!-- Static Menu -->
+  <div id="staticMenu" role="region" aria-label="StaticQuasar menu">
+    <a href="https://sites.google.com/view/staticquasar931/gm3z" target="_blank" rel="noopener">More Unblocked Games by Static</a>
+    <span id="closeStaticMenu" title="Hide temporarily">✕</span>
+  </div>
+
+  <!-- Rotating widget -->
+  <div id="staticSlideMenu" aria-live="polite">
+    <a id="staticSlideLink" href="https://sites.google.com/view/staticquasar931/google-form" target="_blank" rel="noopener" aria-label="Open Google Form">
+      <img id="staticSlideImg" src="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/GoogleForm.png" alt="StaticQuasar931 Google Form for feedback and requests" />
+    </a>
+  </div>
+
   <script>
-    // Leave warning (required)
+    /* Required */
     window.onbeforeunload = () => "Are you sure you want to leave? Your session may be interrupted.";
 
-    // Ensure InputHandler has a valid element and make input reliable
+    /* HARD FIX: InputHandler is looking up some element ID and calling addEventListener on it.
+       Your error proves the lookup is returning null.
+       We do NOT know which ID it uses (since we cannot fetch your JS here), so we alias common IDs to #gameScreen. */
     (function(){
-      const gameScreen = document.getElementById("gameScreen");
-      if (!gameScreen) return;
+      const realGet = document.getElementById.bind(document);
+      const surface = realGet("gameScreen");
 
-      // Make it focusable so keyboard input can work in more browsers
-      gameScreen.tabIndex = 0;
+      const alias = new Set([
+        "gameScreen",
+        "gamescreen",
+        "game-screen",
+        "game_screen",
+        "GameScreen",
+        "screen",
+        "game",
+        "gameRoot",
+        "game-root",
+        "gameCanvas",
+        "game-canvas",
+        "canvas",
+        "mainCanvas",
+        "main-canvas"
+      ]);
 
-      // Focus on first user interaction, without forcing fullscreen
-      const focusOnce = () => {
-        try { gameScreen.focus({ preventScroll: true }); } catch(e) { try { gameScreen.focus(); } catch(_) {} }
-        window.removeEventListener("pointerdown", focusOnce);
-        window.removeEventListener("keydown", focusOnce);
+      document.getElementById = function(id){
+        const found = realGet(id);
+        if (found) return found;
+        if (surface && typeof id === "string" && alias.has(id)) return surface;
+        return null;
       };
-      window.addEventListener("pointerdown", focusOnce, { once:true, passive:true });
-      window.addEventListener("keydown", focusOnce, { once:true });
 
-      // Auto-fit canvas in a safe way without relying on setFullscreen
-      function fitCanvas(canvas){
-        if (!canvas) return;
-        const dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
-        const w = Math.max(1, Math.floor(window.innerWidth));
-        const h = Math.max(1, Math.floor(window.innerHeight));
+      if (surface){
+        surface.tabIndex = 0;
 
-        // Keep CSS size full screen, but set internal buffer for crisp rendering
-        canvas.style.width = "100vw";
-        canvas.style.height = "100vh";
+        const focusOnce = () => {
+          try { surface.focus({ preventScroll: true }); } catch(e) { try { surface.focus(); } catch(_) {} }
+          window.removeEventListener("pointerdown", focusOnce);
+          window.removeEventListener("keydown", focusOnce);
+        };
+        window.addEventListener("pointerdown", focusOnce, { once:true, passive:true });
+        window.addEventListener("keydown", focusOnce, { once:true });
 
-        const targetW = Math.floor(w * dpr);
-        const targetH = Math.floor(h * dpr);
+        function fitCanvas(c){
+          if (!c) return;
+          const dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
+          const w = Math.max(1, Math.floor(window.innerWidth));
+          const h = Math.max(1, Math.floor(window.innerHeight));
 
-        if (canvas.width !== targetW) canvas.width = targetW;
-        if (canvas.height !== targetH) canvas.height = targetH;
-      }
+          c.style.width = "100vw";
+          c.style.height = "100vh";
 
-      // Move any canvas into #gameScreen so events bubble correctly
-      function adoptCanvas(){
-        const c = document.querySelector("canvas");
-        if (!c) return;
-        if (c.parentElement !== gameScreen) {
-          gameScreen.appendChild(c);
+          const targetW = Math.floor(w * dpr);
+          const targetH = Math.floor(h * dpr);
+
+          if (c.width !== targetW) c.width = targetW;
+          if (c.height !== targetH) c.height = targetH;
         }
-        fitCanvas(c);
+
+        function adoptCanvas(){
+          const c = document.querySelector("canvas");
+          if (!c) return;
+          if (c.parentElement !== surface) surface.appendChild(c);
+          fitCanvas(c);
+        }
+
+        const mo = new MutationObserver(adoptCanvas);
+        mo.observe(document.documentElement, { childList:true, subtree:true });
+
+        adoptCanvas();
+        window.addEventListener("resize", () => {
+          const c = document.querySelector("canvas");
+          if (c) fitCanvas(c);
+        }, { passive:true });
       }
-
-      // Observe DOM for late-created canvas
-      const mo = new MutationObserver(() => adoptCanvas());
-      mo.observe(document.documentElement, { childList:true, subtree:true });
-
-      // Try immediately and on resize
-      adoptCanvas();
-      window.addEventListener("resize", () => {
-        const c = document.querySelector("canvas");
-        if (c) fitCanvas(c);
-      }, { passive:true });
     })();
 
-    // Static Menu show/hide with 3 minute return
+    /* Static Menu hide for 3 minutes */
     (function(){
       const menu = document.getElementById("staticMenu");
       const btn  = document.getElementById("closeStaticMenu");
@@ -230,7 +320,7 @@
       if (btn) btn.onclick = hideFor3m;
     })();
 
-    // Rotator: Google Form → Discord → Instagram
+    /* Rotator: Google Form → Discord → Instagram */
     (function(){
       const wrap = document.getElementById("staticSlideMenu");
       const a    = document.getElementById("staticSlideLink");
@@ -251,8 +341,8 @@
         alt:  "StaticQuasar931 Instagram",
         link: "https://www.instagram.com/freeschoolgamepage/"
       };
-      const ROTATION = [FORM, DISCORD, INSTA];
 
+      const ROTATION = [FORM, DISCORD, INSTA];
       ROTATION.forEach(o => { const p = new Image(); p.src = o.src; });
 
       const T_IN = 2000, T_SHOW = 5000, T_OUT = 2000, T_HIDDEN = 20000;
@@ -284,7 +374,7 @@
       })();
     })();
 
-    // Keyboard secret toggle: y + u + i to toggle all Visual SEO
+    /* y + u + i toggle Visual SEO */
     (function(){
       const idsToToggle = ["staticMenu", "staticSlideMenu"];
       let seq = [];
@@ -312,23 +402,23 @@
     })();
   </script>
 
-  <!-- Game scripts (defer keeps order and ensures DOM exists first) -->
-  <script defer src="js/AssetManager.js"></script>
-  <script defer src="js/CameraSystem.js"></script>
-  <script defer src="js/EnemyAI.js"></script>
-  <script defer src="js/GameState.js"></script>
-  <script defer src="js/InputHandler.js"></script>
-  <script defer src="js/ScaryFaceFlicker.js"></script>
-  <script defer src="js/StaticNoise.js"></script>
-  <script defer src="js/UIManager.js"></script>
-  <script defer src="js/Game.js"></script>
-  <script defer src="js/main.js"></script>
+  <!-- Game scripts (keep your original order) -->
+  <script src="js/AssetManager.js"></script>
+  <script src="js/CameraSystem.js"></script>
+  <script src="js/EnemyAI.js"></script>
+  <script src="js/GameState.js"></script>
+  <script src="js/InputHandler.js"></script>
+  <script src="js/ScaryFaceFlicker.js"></script>
+  <script src="js/StaticNoise.js"></script>
+  <script src="js/UIManager.js"></script>
+  <script src="js/Game.js"></script>
+  <script src="js/main.js"></script>
 
-  <!-- Hidden SEO block (long, indexable, no visual impact) -->
+  <!-- Hidden SEO block -->
   <div class="seo-hidden" aria-hidden="true">
     <h1>Five Nights at Epstein&#39;s (FNAE) Unblocked Web Version by StaticQuasar931</h1>
     <p>
-      Five Nights at Epstein&#39;s (FNAE) is a browser horror game web version built to run smoothly on Chromebook and desktop with no special setup. This page is designed to be easy to load and easy to play at school, work, or anywhere with a clean full screen fit that automatically resizes to your device. If a loading screen seems stuck, try refreshing the page and letting it load again, because school networks can sometimes slow down larger assets like audio, images, or scripts. This page includes quick access links so you can request new games, report bugs, or join the community. This is part of StaticQuasar931 unblocked games, also known as static, staticquasar, staticquasar931, static 931, staticq, staticq931, and 931. Search phrases people use include fnae unblocked, five nights at epstein&#39;s unblocked, fnae working at school, fnae school safe, horror game unblocked, scary game unblocked, browser game unblocked, and chromebook game unblocked. Keyword variations include game and g@me, games and g@mes, and also unblocked spelled as unbl0cked. For more titles, visit the main games list and explore other unblocked school safe options made to work across devices.
+      Five Nights at Epstein&#39;s (FNAE) is a browser horror game web version built to run on Chromebook and desktop. This page is designed to work at school, work, or anywhere with a clean full-screen fit that automatically resizes to your device without relying on any fullscreen APIs. If loading seems stuck on a school network, refresh and try again because large assets like audio and images can be delayed. This is part of StaticQuasar931 unblocked games, also known as static, staticquasar, staticquasar931, static 931, staticq, staticq931, and 931. Search phrases include fnae unblocked, five nights at epstein&#39;s unblocked, fnae working at school, fnae school safe, horror game unblocked, scary game unblocked, browser game unblocked, and chromebook game unblocked. Keyword variations include game and g@me, games and g@mes, and unblocked spelled as unbl0cked.
     </p>
     <ul>
       <li><a href="https://sites.google.com/view/staticquasar931/gm3z">More Unblocked Games by Static</a></li>
