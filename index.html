@@ -6,8 +6,8 @@
 
   <!-- SEO -->
   <title>Five Nights at Epstein&#39;s (FNAE) Unblocked Web Version | StaticQuasar931</title>
-  <meta name="description" content="Play Five Nights at Epstein&#39;s (FNAE) unblocked in your browser. A school-safe horror game style experience with a smooth web version build. Works at school, work, or anywhere. More unblocked games by StaticQuasar931." />
-  <meta name="keywords" content="five nights at epstein's unblocked, fnae unblocked, fnae game unblocked, five nights at epstein's game, fnae web version, fnae html5, fnae browser, fnae working at school, fnae school, fnae school-safe, horror game unblocked, scary game unblocked, staticquasar931, static quasar 931, static 931, staticq, staticq931, 931, unblocked, unbl0cked, games, g@mes, game, g@me, browser game, chromebook game, play at school" />
+  <meta name="description" content="Play Five Nights at Epstein&#39;s (FNAE) unblocked in your browser. A school-safe horror style web build that works at school, work, or anywhere. More unblocked games by StaticQuasar931." />
+  <meta name="keywords" content="five nights at epstein's unblocked, fnae unblocked, fnae game unblocked, five nights at epstein's game, fnae web version, fnae html5, fnae browser, fnae working at school, fnae school, fnae school-safe, horror game unblocked, scary game unblocked, static, staticquasar, staticquasar931, static 931, staticq, staticq931, 931, unblocked, unbl0cked, games, g@mes, game, g@me, browser game, chromebook game, play at school" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="theme-color" content="#000000" />
   <link rel="canonical" href="https://staticquasar931.github.io/Five-Night-s-at-Epstein-s-FNAE-/" />
@@ -25,30 +25,38 @@
 
   <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" />
 
-  <!-- IMPORTANT: base must not break relative asset loading -->
-  <base href="./" />
-
-  <!-- Game stylesheet (keep as-is) -->
+  <!-- Keep NO <base> so all relative paths resolve correctly on GitHub Pages -->
   <link rel="stylesheet" href="style.css" />
 
   <style>
-    /* Basic hardening so the game always fills the viewport */
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background: #000;
-      overflow: hidden;
-      -webkit-text-size-adjust: 100%;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    html, body{
+      margin:0;
+      padding:0;
+      height:100%;
+      background:#000;
+      overflow:hidden;
+      -webkit-text-size-adjust:100%;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
 
-    /* If the game uses a canvas, this helps it fit cleanly */
-    canvas {
-      display: block;
-      width: 100vw;
-      height: 100vh;
-      touch-action: none;
+    /* Game mount and input surface required by InputHandler.js */
+    #gameScreen{
+      position:fixed;
+      inset:0;
+      width:100vw;
+      height:100vh;
+      z-index:1;
+      background:transparent;
+      outline:none;
+      display:block;
+    }
+
+    /* Ensure any canvas fills the viewport visually */
+    canvas{
+      display:block;
+      width:100vw;
+      height:100vh;
+      touch-action:none;
     }
 
     /* ===========================
@@ -60,7 +68,6 @@
       --shadow:0 10px 30px rgba(0,0,0,.4);
     }
 
-    /* Static Menu (top-left) */
     #staticMenu{
       position:fixed; left:12px; top:12px; z-index:9999;
       display:flex; gap:10px; align-items:center; user-select:none;
@@ -77,7 +84,6 @@
     }
     @keyframes menuEnter{ from{opacity:0; transform:translateY(-8px)} to{opacity:1; transform:translateY(0)} }
 
-    /* Rotating slide-in widget (bottom-right) */
     #staticSlideMenu{
       position:fixed; bottom:24px; right:24px; z-index:9999;
       width:100px; height:100px; pointer-events:none; opacity:0;
@@ -107,9 +113,8 @@
 </head>
 
 <body>
-
   <!-- Game input surface (required by InputHandler.js) -->
-<div id="gameScreen" aria-label="Game screen"></div>
+  <div id="gameScreen" aria-label="Game screen"></div>
 
   <!-- Static Menu (shows on load, hides 3 minutes when closed, then returns) -->
   <div id="staticMenu" role="region" aria-label="StaticQuasar menu">
@@ -124,10 +129,10 @@
     </a>
   </div>
 
-  <!-- Existing game content (kept compatible) -->
+  <!-- Preloader (kept) -->
   <div id="preloader">
     <div class="preloader-content">
-      <div class="preloader-logo">FIVE NIGHTS<br>AT EPSTEIN'S</div>
+      <div class="preloader-logo">FIVE NIGHTS<br>AT EPSTEIN&#39;S</div>
       <div class="preloader-spinner">
         <div class="spinner-ring"></div>
         <div class="spinner-ring"></div>
@@ -141,13 +146,66 @@
     </div>
   </div>
 
-  <!-- If your JS creates/inserts the canvas automatically, this container is harmless.
-       If your JS expects an element to mount into, this helps. -->
-  <div id="game-root" aria-label="Game area"></div>
-
   <script>
     // Leave warning (required)
     window.onbeforeunload = () => "Are you sure you want to leave? Your session may be interrupted.";
+
+    // Ensure InputHandler has a valid element and make input reliable
+    (function(){
+      const gameScreen = document.getElementById("gameScreen");
+      if (!gameScreen) return;
+
+      // Make it focusable so keyboard input can work in more browsers
+      gameScreen.tabIndex = 0;
+
+      // Focus on first user interaction, without forcing fullscreen
+      const focusOnce = () => {
+        try { gameScreen.focus({ preventScroll: true }); } catch(e) { try { gameScreen.focus(); } catch(_) {} }
+        window.removeEventListener("pointerdown", focusOnce);
+        window.removeEventListener("keydown", focusOnce);
+      };
+      window.addEventListener("pointerdown", focusOnce, { once:true, passive:true });
+      window.addEventListener("keydown", focusOnce, { once:true });
+
+      // Auto-fit canvas in a safe way without relying on setFullscreen
+      function fitCanvas(canvas){
+        if (!canvas) return;
+        const dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
+        const w = Math.max(1, Math.floor(window.innerWidth));
+        const h = Math.max(1, Math.floor(window.innerHeight));
+
+        // Keep CSS size full screen, but set internal buffer for crisp rendering
+        canvas.style.width = "100vw";
+        canvas.style.height = "100vh";
+
+        const targetW = Math.floor(w * dpr);
+        const targetH = Math.floor(h * dpr);
+
+        if (canvas.width !== targetW) canvas.width = targetW;
+        if (canvas.height !== targetH) canvas.height = targetH;
+      }
+
+      // Move any canvas into #gameScreen so events bubble correctly
+      function adoptCanvas(){
+        const c = document.querySelector("canvas");
+        if (!c) return;
+        if (c.parentElement !== gameScreen) {
+          gameScreen.appendChild(c);
+        }
+        fitCanvas(c);
+      }
+
+      // Observe DOM for late-created canvas
+      const mo = new MutationObserver(() => adoptCanvas());
+      mo.observe(document.documentElement, { childList:true, subtree:true });
+
+      // Try immediately and on resize
+      adoptCanvas();
+      window.addEventListener("resize", () => {
+        const c = document.querySelector("canvas");
+        if (c) fitCanvas(c);
+      }, { passive:true });
+    })();
 
     // Static Menu show/hide with 3 minute return
     (function(){
@@ -162,7 +220,7 @@
         localStorage.setItem(KEY, String(until));
         setTimeout(show, 180000);
       };
-      const until = parseInt(localStorage.getItem(KEY) || "0", 10);
+      const until = parseInt(localStorage.getItem(KEY)||"0", 10);
       if (until && Date.now() < until){
         if (menu) menu.style.display = "none";
         setTimeout(show, Math.max(0, until - Date.now()));
@@ -193,8 +251,8 @@
         alt:  "StaticQuasar931 Instagram",
         link: "https://www.instagram.com/freeschoolgamepage/"
       };
-
       const ROTATION = [FORM, DISCORD, INSTA];
+
       ROTATION.forEach(o => { const p = new Image(); p.src = o.src; });
 
       const T_IN = 2000, T_SHOW = 5000, T_OUT = 2000, T_HIDDEN = 20000;
@@ -254,23 +312,23 @@
     })();
   </script>
 
-  <!-- Game scripts (keep pathing simple so it works) -->
-  <script src="js/AssetManager.js"></script>
-  <script src="js/CameraSystem.js"></script>
-  <script src="js/EnemyAI.js"></script>
-  <script src="js/GameState.js"></script>
-  <script src="js/InputHandler.js"></script>
-  <script src="js/ScaryFaceFlicker.js"></script>
-  <script src="js/StaticNoise.js"></script>
-  <script src="js/UIManager.js"></script>
-  <script src="js/Game.js"></script>
-  <script src="js/main.js"></script>
+  <!-- Game scripts (defer keeps order and ensures DOM exists first) -->
+  <script defer src="js/AssetManager.js"></script>
+  <script defer src="js/CameraSystem.js"></script>
+  <script defer src="js/EnemyAI.js"></script>
+  <script defer src="js/GameState.js"></script>
+  <script defer src="js/InputHandler.js"></script>
+  <script defer src="js/ScaryFaceFlicker.js"></script>
+  <script defer src="js/StaticNoise.js"></script>
+  <script defer src="js/UIManager.js"></script>
+  <script defer src="js/Game.js"></script>
+  <script defer src="js/main.js"></script>
 
-  <!-- Hidden SEO block (indexable, no visual impact) -->
+  <!-- Hidden SEO block (long, indexable, no visual impact) -->
   <div class="seo-hidden" aria-hidden="true">
-    <h1>Five Nights at Epstein&#39;s (FNAE) Unblocked Web Version</h1>
+    <h1>Five Nights at Epstein&#39;s (FNAE) Unblocked Web Version by StaticQuasar931</h1>
     <p>
-      Play Five Nights at Epstein&#39;s (FNAE) unblocked in your browser. This web version is designed to work at school, work, or anywhere on Chromebook and desktop. If a page loads slowly, refresh and try again. For more unblocked games by StaticQuasar931, visit the games list and use the quick links below for requests, Discord, and Instagram updates. Brand keywords: static, staticquasar, staticquasar931, static 931, staticq, staticq931, 931. Search variations: unblocked, unbl0cked, school-safe, working at school, game, g@me, games, g@mes, browser game.
+      Five Nights at Epstein&#39;s (FNAE) is a browser horror game web version built to run smoothly on Chromebook and desktop with no special setup. This page is designed to be easy to load and easy to play at school, work, or anywhere with a clean full screen fit that automatically resizes to your device. If a loading screen seems stuck, try refreshing the page and letting it load again, because school networks can sometimes slow down larger assets like audio, images, or scripts. This page includes quick access links so you can request new games, report bugs, or join the community. This is part of StaticQuasar931 unblocked games, also known as static, staticquasar, staticquasar931, static 931, staticq, staticq931, and 931. Search phrases people use include fnae unblocked, five nights at epstein&#39;s unblocked, fnae working at school, fnae school safe, horror game unblocked, scary game unblocked, browser game unblocked, and chromebook game unblocked. Keyword variations include game and g@me, games and g@mes, and also unblocked spelled as unbl0cked. For more titles, visit the main games list and explore other unblocked school safe options made to work across devices.
     </p>
     <ul>
       <li><a href="https://sites.google.com/view/staticquasar931/gm3z">More Unblocked Games by Static</a></li>
@@ -281,4 +339,3 @@
   </div>
 </body>
 </html>
-
