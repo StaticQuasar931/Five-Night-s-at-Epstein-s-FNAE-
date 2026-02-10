@@ -5,25 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
   <!-- SEO -->
-  <title>FNAE Unblocked Web Version | StaticQuasar931</title>
-  <meta name="description" content="Play FNAE unblocked in your browser. Works at school, work, or anywhere. More unblocked games by StaticQuasar931." />
-  <meta name="keywords" content="fnae unblocked, fnae game unblocked, five nights at epstein's unblocked, fnae web version, fnae html5, fnae browser, fnae working at school, fnae school, fnae school-safe, horror game unblocked, scary game unblocked, static, staticquasar, staticquasar931, static 931, staticq, staticq931, 931, unblocked, unbl0cked, games, g@mes, game, g@me, browser game, chromebook game, play at school" />
+  <title>Five Nights at Epstein&#39;s (FNAE) Unblocked Web Version | StaticQuasar931</title>
+  <meta name="description" content="Play Five Nights at Epstein&#39;s (FNAE) unblocked in your browser. Works at school, work, or anywhere. More unblocked games by StaticQuasar931." />
+  <meta name="keywords" content="five nights at epstein's unblocked,fnae unblocked,fnae game unblocked,fnae web version,fnae html5,fnae browser,fnae working at school,fnae school,fnae school-safe,horror game unblocked,scary game unblocked,static,staticquasar,staticquasar931,static 931,staticq,staticq931,931,unblocked,unbl0cked,games,g@mes,game,g@me,browser game,chromebook game,play at school" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="theme-color" content="#000000" />
   <link rel="canonical" href="https://staticquasar931.github.io/Five-Night-s-at-Epstein-s-FNAE-/" />
 
   <!-- Social -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="FNAE Unblocked Web Version | StaticQuasar931" />
+  <meta property="og:title" content="Five Nights at Epstein&#39;s (FNAE) Unblocked Web Version | StaticQuasar931" />
   <meta property="og:description" content="Play FNAE unblocked in your browser. Works at school, work, or anywhere. More unblocked games by StaticQuasar931." />
   <meta property="og:url" content="https://staticquasar931.github.io/Five-Night-s-at-Epstein-s-FNAE-/" />
   <meta property="og:image" content="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="FNAE Unblocked Web Version | StaticQuasar931" />
+  <meta name="twitter:title" content="Five Nights at Epstein&#39;s (FNAE) Unblocked Web Version | StaticQuasar931" />
   <meta name="twitter:description" content="Play FNAE unblocked in your browser. Works at school, work, or anywhere." />
   <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" />
 
   <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" />
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    "applicationCategory": "Game",
+    "operatingSystem": "any",
+    "name": "Five Nights at Epstein's (FNAE)",
+    "image": "https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png",
+    "description": "FNAE (FNAF remake style). Warning shown before play. None of the photos are graphic.",
+    "isFamilyFriendly": false,
+    "numberOfPlayers": 1,
+    "genre": "Horror",
+    "offers": { "@type": "Offer", "category": "free", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
 
   <style>
     html, body{
@@ -40,7 +57,7 @@
     *{ box-sizing:border-box; }
     .hidden{ display:none !important; }
 
-    /* Root game surface */
+    /* Game root */
     #game-screen{
       position:fixed;
       inset:0;
@@ -51,7 +68,7 @@
       overflow:hidden;
     }
 
-    /* Input target expected by InputHandler.js (it looked for gameScreen) */
+    /* Input target (InputHandler.js was looking for this) */
     #gameScreen{
       position:absolute;
       inset:0;
@@ -70,27 +87,65 @@
       touch-action:none;
     }
 
-    /* Static noise canvases expected by StaticNoise.js (covers common ids) */
-    #static-canvas, #staticCanvas{
+    /* Static noise canvases (StaticNoise.js was failing because it could not find its target) */
+    #static-canvas, #staticCanvas, #static-noise-canvas, #staticNoiseCanvas, #staticNoise, #static-noise{
       position:absolute;
       inset:0;
       width:100%;
       height:100%;
-      z-index:3;
+      z-index:5;
       pointer-events:none;
       opacity:0;
       display:block;
     }
 
-    /* Cutscene element expected by Game.js */
+    /* Cutscene (Game.js referenced #cutscene) */
     #cutscene{
+      position:absolute;
+      inset:0;
+      z-index:12;
+      background:#000;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+    }
+
+    /* Night intro (Game.js referenced nightIntroText) */
+    #night-intro{
+      position:absolute;
+      inset:0;
+      z-index:14;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#000;
+      color:#fff;
+      text-align:center;
+      padding:16px;
+    }
+    #night-intro-text{
+      font-weight:950;
+      letter-spacing:1px;
+      font-size:20px;
+      text-shadow:0 0 16px rgba(255,255,255,.2);
+    }
+
+    /* Camera panel (CameraSystem.js referenced cameraPanel) */
+    #camera-panel{
       position:absolute;
       inset:0;
       z-index:10;
       background:#000;
       display:flex;
-      align-items:center;
-      justify-content:center;
+      align-items:stretch;
+      justify-content:stretch;
+    }
+    #camera-panel.hidden{ display:none !important; }
+    #camera-feed{
+      position:absolute;
+      inset:0;
+      background:#000;
     }
 
     /* Preloader */
@@ -300,6 +355,71 @@
       font-size:16px;
     }
 
+    /* Warning gate */
+    #warnOverlay{
+      position:fixed;
+      inset:0;
+      z-index:120;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,.78);
+      backdrop-filter:blur(2px);
+      padding:14px;
+    }
+    #warnCard{
+      width:min(720px, 94vw);
+      border-radius:14px;
+      background:linear-gradient(135deg, rgba(20,20,28,.95), rgba(20,20,28,.72));
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:0 10px 30px rgba(0,0,0,.65);
+      padding:16px 14px;
+    }
+    #warnTitle{
+      margin:0 0 8px;
+      font-size:18px;
+      font-weight:950;
+      letter-spacing:.8px;
+    }
+    #warnBody p{
+      margin:8px 0;
+      font-size:12px;
+      line-height:1.5;
+      opacity:.95;
+    }
+    #warnButtons{
+      margin-top:12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-end;
+    }
+    .wbtn{
+      appearance:none;
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:950;
+      letter-spacing:.5px;
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.07);
+      color:#eaf4ff;
+    }
+    .wbtn:active{ transform:scale(.98) }
+    .wbtn.primary{
+      border:1px solid rgba(94,225,255,.35);
+      background:rgba(94,225,255,.12);
+    }
+    .wbtn.danger{
+      border:1px solid rgba(255,80,80,.35);
+      background:rgba(255,80,80,.10);
+    }
+    .wbtn.ghost{
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.04);
+      opacity:.9;
+    }
+
     /* ===========================
        VISUAL SEO (Default Standard)
        =========================== */
@@ -350,12 +470,31 @@
       #staticSlideMenu{ width:88px; height:88px }
       .preloader-logo{ font-size:24px }
       .menu-title{ font-size:16px }
+      #warnTitle{ font-size:16px }
     }
   </style>
 </head>
 
 <body>
-  <!-- Preloader (main.js uses these ids) -->
+  <!-- Warning + credit gate -->
+  <div id="warnOverlay" role="dialog" aria-modal="true" aria-label="Warning">
+    <div id="warnCard">
+      <h1 id="warnTitle">Warning + Credit</h1>
+      <div id="warnBody">
+        <p><b>This game is not made by StaticQuasar931.</b></p>
+        <p><b>Content warning:</b> it may be upsetting. <b>Epstein&#39;s acts are not a joke.</b></p>
+        <p><b>None of the photos are graphic.</b></p>
+        <p>This is <b>not hosted for political reasons</b>. It is here as an older build/port.</p>
+      </div>
+      <div id="warnButtons">
+        <button class="wbtn ghost" id="warnDontShow" type="button">Don&#39;t show again</button>
+        <button class="wbtn danger" id="warnExit" type="button">Leave</button>
+        <button class="wbtn primary" id="warnContinue" type="button">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preloader -->
   <div id="preloader">
     <div class="preloader-content">
       <div class="preloader-logo">FIVE NIGHTS<br />AT EPSTEIN&#39;S</div>
@@ -372,7 +511,7 @@
     </div>
   </div>
 
-  <!-- Main Menu (Game.js requires these exact ids for buttons) -->
+  <!-- Main Menu -->
   <div id="main-menu">
     <div class="menu-card">
       <div class="menu-title">FNAE</div>
@@ -386,25 +525,42 @@
       </div>
 
       <div class="menu-row">
-        <button class="btn hidden" id="special-night-btn" type="button">SPECIAL NIGHT<span id="star-icon" class="icon-star hidden"></span></button>
+        <button class="btn hidden" id="special-night-btn" type="button">
+          SPECIAL NIGHT<span id="star-icon" class="icon-star hidden"></span>
+        </button>
         <span id="star-icon-2" class="icon-star hidden" title="Completed"></span>
       </div>
     </div>
   </div>
 
-  <!-- Game screen and all required internal elements -->
+  <!-- Game Screen -->
   <div id="game-screen" aria-label="Game screen">
+    <!-- Input surface (InputHandler.js expects this) -->
     <div id="gameScreen" tabindex="0" aria-label="Input surface"></div>
 
-    <!-- Static noise canvases (StaticNoise.js was crashing because it could not find one) -->
+    <!-- Camera system panel (CameraSystem.js expects this) -->
+    <div id="camera-panel" class="hidden" aria-label="Camera panel">
+      <div id="camera-feed" aria-hidden="true"></div>
+    </div>
+
+    <!-- Cutscene (Game.js expects this) -->
+    <div id="cutscene" class="hidden" aria-label="Cutscene"></div>
+
+    <!-- Night Intro (Game.js expects nightIntroText) -->
+    <div id="night-intro" class="hidden" aria-label="Night intro">
+      <div id="night-intro-text">NIGHT 1</div>
+    </div>
+
+    <!-- Static noise targets (StaticNoise.js expects one of these to exist) -->
     <canvas id="static-canvas" aria-hidden="true"></canvas>
     <canvas id="staticCanvas" aria-hidden="true"></canvas>
-
-    <!-- Cutscene element (Game.js was crashing because #cutscene did not exist) -->
-    <div id="cutscene" class="hidden" aria-hidden="true"></div>
+    <canvas id="static-noise-canvas" aria-hidden="true"></canvas>
+    <canvas id="staticNoiseCanvas" aria-hidden="true"></canvas>
+    <canvas id="staticNoise" aria-hidden="true"></canvas>
+    <canvas id="static-noise" aria-hidden="true"></canvas>
   </div>
 
-  <!-- Tutorial (ids required) -->
+  <!-- Tutorial -->
   <div id="tutorial-overlay" class="hidden" aria-label="Tutorial">
     <div class="tutorial-card">
       <div class="tutorial-title">How to Play</div>
@@ -417,7 +573,7 @@
     </div>
   </div>
 
-  <!-- Game Over (ids required) -->
+  <!-- Game Over -->
   <div id="game-over" class="hidden" aria-label="Game over">
     <div class="gameover-card">
       <div id="game-over-text">GAME OVER</div>
@@ -429,7 +585,7 @@
   </div>
 
   <!-- Audio element expected by main.js -->
-  <audio id="menu-music" preload="auto" loop></audio>
+  <audio id="menu-music" preload="auto" loop muted></audio>
 
   <!-- Visual SEO: Static Menu -->
   <div id="staticMenu" role="region" aria-label="StaticQuasar menu">
@@ -448,7 +604,49 @@
     // Leave warning
     window.onbeforeunload = () => "Are you sure you want to leave? Your session may be interrupted.";
 
-    // Autofit any canvas created by the game without fullscreen APIs
+    // Warning gate logic (also provides user gesture for autoplay policies)
+    (function(){
+      const overlay = document.getElementById("warnOverlay");
+      const dont = document.getElementById("warnDontShow");
+      const exit = document.getElementById("warnExit");
+      const cont = document.getElementById("warnContinue");
+      const KEY = "sq931_fnae_warn_hide";
+
+      function hideOverlay(){
+        if (!overlay) return;
+        overlay.style.display = "none";
+      }
+      function showOverlay(){
+        if (!overlay) return;
+        overlay.style.display = "flex";
+      }
+
+      const skip = localStorage.getItem(KEY) === "1";
+      if (skip) hideOverlay(); else showOverlay();
+
+      if (dont) dont.addEventListener("click", () => {
+        localStorage.setItem(KEY, "1");
+        hideOverlay();
+        // try to unlock audio with a gesture
+        const m = document.getElementById("menu-music");
+        if (m) { try { m.play().catch(()=>{}); } catch(e){} }
+      });
+
+      if (exit) exit.addEventListener("click", () => {
+        try { window.location.href = "https://sites.google.com/view/staticquasar931/gm3z"; } catch(e) {}
+      });
+
+      if (cont) cont.addEventListener("click", () => {
+        hideOverlay();
+        // attempt autoplay-safe start: play muted now, main.js can unmute after user actions
+        const m = document.getElementById("menu-music");
+        if (m) {
+          try { m.muted = true; m.play().catch(()=>{}); } catch(e) {}
+        }
+      });
+    })();
+
+    // Autofit any canvas without fullscreen APIs
     (function(){
       function fitCanvas(c){
         if (!c) return;
@@ -462,17 +660,13 @@
         if (c.width !== tw) c.width = tw;
         if (c.height !== th) c.height = th;
       }
-
-      function fitAllCanvases(){
+      function fitAll(){
         document.querySelectorAll("canvas").forEach(fitCanvas);
       }
-
-      const mo = new MutationObserver(() => fitAllCanvases());
+      const mo = new MutationObserver(() => fitAll());
       mo.observe(document.documentElement, { childList:true, subtree:true });
+      window.addEventListener("resize", () => fitAll(), { passive:true });
 
-      window.addEventListener("resize", () => fitAllCanvases(), { passive:true });
-
-      // Focus input surface after first interaction so keyboard/mouse hooks behave
       const focusOnce = () => {
         const el = document.getElementById("gameScreen");
         if (el){
@@ -484,7 +678,7 @@
       window.addEventListener("pointerdown", focusOnce, { once:true, passive:true });
       window.addEventListener("keydown", focusOnce, { once:true });
 
-      fitAllCanvases();
+      fitAll();
     })();
 
     // Static Menu show/hide with 3 minute return
@@ -603,9 +797,9 @@
 
   <!-- Hidden SEO block -->
   <div class="seo-hidden" aria-hidden="true">
-    <h1>FNAE Unblocked Web Version by StaticQuasar931</h1>
+    <h1>Five Nights at Epstein&#39;s (FNAE) Unblocked Web Version by StaticQuasar931</h1>
     <p>
-      Play FNAE unblocked in your browser. This is designed to work at school, work, or anywhere on Chromebook and desktop. The page auto-fits and resizes live without using fullscreen APIs. If the game seems stuck loading on a school network, refresh and try again. Brand keywords: static, staticquasar, staticquasar931, static 931, staticq, staticq931, 931. Search variations: unblocked, unbl0cked, school-safe, working at school, game, g@me, games, g@mes, browser game.
+      Play FNAE unblocked in your browser. This page is designed to work at school, work, or anywhere on Chromebook and desktop. It auto-fits and resizes live without using fullscreen APIs. If the game seems stuck loading on a school network, refresh and try again. Brand keywords: static, staticquasar, staticquasar931, static 931, staticq, staticq931, 931. Search variations: unblocked, unbl0cked, school-safe, working at school, game, g@me, games, g@mes, browser game.
     </p>
     <ul>
       <li><a href="https://sites.google.com/view/staticquasar931/gm3z">More Unblocked Games by Static</a></li>
