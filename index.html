@@ -11,18 +11,21 @@
   <meta name="theme-color" content="#000000" />
   <link rel="canonical" href="https://staticquasar931.github.io/Five-Night-s-at-Epstein-s-FNAE-/" />
 
+  <!-- Social / SEO thumbnail (NOT favicon) -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Five Nights At Epstein&#39;s (FNAE) Unblocked Web Version | StaticQuasar931" />
   <meta property="og:description" content="Play FNAE unblocked in your browser. Works at school, work, or anywhere. More unblocked games by StaticQuasar931." />
   <meta property="og:url" content="https://staticquasar931.github.io/Five-Night-s-at-Epstein-s-FNAE-/" />
-  <meta property="og:image" content="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" />
-  <meta name="twitter:card" content="summary" />
+  <meta property="og:image" content="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/five-nights-at-epsteins.png" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Five Nights At Epstein&#39;s (FNAE) Unblocked Web Version | StaticQuasar931" />
   <meta name="twitter:description" content="Play FNAE unblocked in your browser. Works at school, work, or anywhere." />
-  <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" />
+  <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/five-nights-at-epsteins.png" />
 
+  <!-- Favicon stays your icon -->
   <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" />
 
+  <!-- Schema.org -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -30,7 +33,7 @@
     "applicationCategory": "Game",
     "operatingSystem": "any",
     "name": "Five Nights At Epstein's (FNAE)",
-    "image": "https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png",
+    "image": "https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/five-nights-at-epsteins.png",
     "description": "FNAE (FNAF remake style). Warning shown before play. None of the photos are graphic.",
     "isFamilyFriendly": false,
     "numberOfPlayers": 1,
@@ -39,7 +42,9 @@
   }
   </script>
 
+  <!-- GitHub Pages project base -->
   <base href="/Five-Night-s-at-Epstein-s-FNAE-/" />
+
   <link rel="stylesheet" href="style.css" />
 
   <style>
@@ -86,35 +91,39 @@
     .wbtn.danger{ background:rgba(255,70,70,.14); border-color:rgba(255,70,70,.35); }
     .wbtn.ghost{ background:rgba(255,255,255,.04); }
 
-    /* Keep your menu background path base-friendly (no leading slash) */
+    /* Keep the menu background base-friendly */
     #main-menu{ background: url("assets/images/menubackground.png") center/cover; }
 
-    /* Menu branding lines (small, non-desync) */
-    #main-menu .hosted-by{
-      margin-top:8px;
-      font-size:13px;
-      color:#cfe8ff;
-      font-family:'Courier New', monospace;
-      font-weight:800;
-      letter-spacing:.6px;
+    /* Bottom-left watermark/host badge (like original: fixed + fully bottom-left) */
+    #host-watermark{
+      position:fixed;
+      left:10px;
+      bottom:10px;
+      z-index:99998;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:12px;
+      background:rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.16);
+      box-shadow:0 12px 32px rgba(0,0,0,.45);
+      color:#eaf4ff;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-size:12.5px;
+      user-select:none;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      pointer-events:auto;
     }
-    #main-menu .hosted-by a{
+    #host-watermark a{
       color:#5ee1ff;
       text-decoration:none;
       font-weight:900;
+      letter-spacing:.2px;
     }
-    #main-menu .credits-small{
-      margin-top:6px;
-      font-size:12px;
-      color:#a9a9a9;
-      font-family:'Courier New', monospace;
-      letter-spacing:.4px;
-    }
-    #main-menu .reset-hint{
-      margin-top:8px;
-      font-size:12px;
-      color:#888;
-      font-family:'Courier New', monospace;
+    #host-watermark .dot{
+      opacity:.55;
     }
 
     /* Visual SEO standard */
@@ -190,6 +199,7 @@
       #staticSlideMenu{ width:88px; height:88px; }
       #warnTitle{ font-size:18px; }
       #warnBody p{ font-size:13px; }
+      #host-watermark{ left:8px; bottom:8px; font-size:12px; padding:7px 9px; }
     }
   </style>
 </head>
@@ -278,7 +288,7 @@
       <div id="night-intro-text">NIGHT 1</div>
     </div>
 
-    <!-- Main menu (put branding back in a stable order) -->
+    <!-- Main menu -->
     <div id="main-menu">
       <img id="star-icon" class="hidden" src="assets/images/star.png" alt="Star" />
       <img id="star-icon-2" class="hidden" src="assets/images/star.png" alt="Star 2" />
@@ -288,14 +298,7 @@
       <button id="continue-game" class="hidden" type="button">CONTINUE</button>
       <button id="special-night-btn" class="hidden" type="button">EPSTEIN&#39;S SPECIAL NIGHT</button>
 
-      <div class="hosted-by">
-        Hosted by
-        <a href="https://sites.google.com/view/staticquasar931/gm3z" target="_blank" rel="noopener">StaticQuasar931</a>
-      </div>
-
-      <div class="credits-small">© EVAN PRODUCTIONS | HTML5 remake by fivenightsatepsteins.org</div>
-      <div class="reset-hint">If something glitches, refresh.</div>
-
+      <div class="copyright">© EVAN PRODUCTIONS | HTML5 remake by fivenightsatepsteins.org</div>
       <div class="version">v1.1.5</div>
     </div>
 
@@ -334,6 +337,14 @@
         <button id="tutorial-got-it" type="button">GOT IT</button>
       </div>
     </div>
+  </div>
+
+  <!-- Bottom-left watermark/host badge -->
+  <div id="host-watermark" role="contentinfo" aria-label="Hosted by StaticQuasar931">
+    <span>Hosted by</span>
+    <a href="https://sites.google.com/view/staticquasar931/gm3z" target="_blank" rel="noopener">StaticQuasar931</a>
+    <span class="dot">•</span>
+    <span>More games</span>
   </div>
 
   <!-- Visual SEO: Static Menu -->
