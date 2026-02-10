@@ -6,8 +6,8 @@
 
   <!-- SEO -->
   <title>FNAE Unblocked Web Version | StaticQuasar931</title>
-  <meta name="description" content="Play FNAE unblocked in your browser. A school-safe horror style web build that works at school, work, or anywhere. More unblocked games by StaticQuasar931." />
-  <meta name="keywords" content="fnae unblocked, fnae game unblocked, fnae web version, fnae html5, fnae browser, fnae working at school, fnae school, fnae school-safe, horror game unblocked, scary game unblocked, static, staticquasar, staticquasar931, static 931, staticq, staticq931, 931, unblocked, unbl0cked, games, g@mes, game, g@me, browser game, chromebook game, play at school" />
+  <meta name="description" content="Play FNAE unblocked in your browser. Works at school, work, or anywhere. More unblocked games by StaticQuasar931." />
+  <meta name="keywords" content="fnae unblocked, fnae game unblocked, five nights at epstein's unblocked, fnae web version, fnae html5, fnae browser, fnae working at school, fnae school, fnae school-safe, horror game unblocked, scary game unblocked, static, staticquasar, staticquasar931, static 931, staticq, staticq931, 931, unblocked, unbl0cked, games, g@mes, game, g@me, browser game, chromebook game, play at school" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="theme-color" content="#000000" />
   <link rel="canonical" href="https://staticquasar931.github.io/Five-Night-s-at-Epstein-s-FNAE-/" />
@@ -25,7 +25,6 @@
 
   <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" />
 
-  <!-- No style.css in repo, so everything needed is inlined -->
   <style>
     html, body{
       margin:0;
@@ -38,10 +37,10 @@
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:#eaf4ff;
     }
-
+    *{ box-sizing:border-box; }
     .hidden{ display:none !important; }
 
-    /* Game containers expected by Game.js */
+    /* Root game surface */
     #game-screen{
       position:fixed;
       inset:0;
@@ -52,12 +51,46 @@
       overflow:hidden;
     }
 
-    /* If a canvas is created by JS, keep it full screen */
+    /* Input target expected by InputHandler.js (it looked for gameScreen) */
+    #gameScreen{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      z-index:2;
+      outline:none;
+      background:transparent;
+    }
+
+    /* Any canvas created by game stays full screen */
     canvas{
       display:block;
       width:100vw;
       height:100vh;
       touch-action:none;
+    }
+
+    /* Static noise canvases expected by StaticNoise.js (covers common ids) */
+    #static-canvas, #staticCanvas{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      z-index:3;
+      pointer-events:none;
+      opacity:0;
+      display:block;
+    }
+
+    /* Cutscene element expected by Game.js */
+    #cutscene{
+      position:absolute;
+      inset:0;
+      z-index:10;
+      background:#000;
+      display:flex;
+      align-items:center;
+      justify-content:center;
     }
 
     /* Preloader */
@@ -137,7 +170,7 @@
       user-select:none;
     }
 
-    /* Main Menu (expected by Game.js: #main-menu + buttons) */
+    /* Main Menu expected by Game.js */
     #main-menu{
       position:fixed;
       inset:0;
@@ -145,12 +178,12 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      background:rgba(0,0,0,.62);
+      background:rgba(0,0,0,.55);
       backdrop-filter:blur(2px);
     }
     .menu-card{
-      width:min(620px, 92vw);
-      padding:18px 16px;
+      width:min(640px, 92vw);
+      padding:16px 14px;
       border-radius:14px;
       background:linear-gradient(135deg, rgba(20,20,28,.92), rgba(20,20,28,.70));
       border:1px solid rgba(94,225,255,.25);
@@ -161,7 +194,7 @@
       font-weight:950;
       letter-spacing:1.2px;
       font-size:18px;
-      margin:0 0 8px;
+      margin:0 0 6px;
       user-select:none;
     }
     .menu-sub{
@@ -209,7 +242,7 @@
       margin-left:6px;
     }
 
-    /* Tutorial overlay (expected ids) */
+    /* Tutorial overlay expected ids */
     #tutorial-overlay{
       position:fixed;
       inset:0;
@@ -221,7 +254,7 @@
     }
     .tutorial-card{
       width:min(620px, 92vw);
-      padding:18px 16px;
+      padding:16px 14px;
       border-radius:14px;
       background:linear-gradient(135deg, rgba(20,20,28,.92), rgba(20,20,28,.70));
       border:1px solid rgba(94,225,255,.20);
@@ -241,7 +274,7 @@
       line-height:1.5;
     }
 
-    /* Game Over overlay (expected ids) */
+    /* Game Over overlay expected ids */
     #game-over{
       position:fixed;
       inset:0;
@@ -253,7 +286,7 @@
     }
     .gameover-card{
       width:min(520px, 92vw);
-      padding:18px 16px;
+      padding:16px 14px;
       border-radius:14px;
       background:linear-gradient(135deg, rgba(20,20,28,.92), rgba(20,20,28,.70));
       border:1px solid rgba(255,255,255,.14);
@@ -275,7 +308,6 @@
       --glow:0 0 12px rgba(94,225,255,.65), 0 0 32px rgba(155,255,183,.35);
       --shadow:0 10px 30px rgba(0,0,0,.4);
     }
-
     #staticMenu{
       position:fixed; left:12px; top:12px; z-index:9999;
       display:flex; gap:10px; align-items:center; user-select:none;
@@ -323,7 +355,7 @@
 </head>
 
 <body>
-  <!-- Preloader (main.js looks for these exact IDs) -->
+  <!-- Preloader (main.js uses these ids) -->
   <div id="preloader">
     <div class="preloader-content">
       <div class="preloader-logo">FIVE NIGHTS<br />AT EPSTEIN&#39;S</div>
@@ -340,12 +372,12 @@
     </div>
   </div>
 
-  <!-- Main Menu (Game.js expects these IDs) -->
+  <!-- Main Menu (Game.js requires these exact ids for buttons) -->
   <div id="main-menu">
     <div class="menu-card">
       <div class="menu-title">FNAE</div>
       <div class="menu-sub">
-        Works at school, work, or anywhere. If audio does not start, click once, then press Play.
+        Click START to begin. If audio does not start, click once anywhere and try again.
       </div>
 
       <div class="menu-row" style="margin-bottom:10px;">
@@ -360,15 +392,24 @@
     </div>
   </div>
 
-  <!-- Game Screen (Game.js expects #game-screen) -->
-  <div id="game-screen" aria-label="Game screen"></div>
+  <!-- Game screen and all required internal elements -->
+  <div id="game-screen" aria-label="Game screen">
+    <div id="gameScreen" tabindex="0" aria-label="Input surface"></div>
 
-  <!-- Tutorial Overlay (Game.js expects these IDs) -->
+    <!-- Static noise canvases (StaticNoise.js was crashing because it could not find one) -->
+    <canvas id="static-canvas" aria-hidden="true"></canvas>
+    <canvas id="staticCanvas" aria-hidden="true"></canvas>
+
+    <!-- Cutscene element (Game.js was crashing because #cutscene did not exist) -->
+    <div id="cutscene" class="hidden" aria-hidden="true"></div>
+  </div>
+
+  <!-- Tutorial (ids required) -->
   <div id="tutorial-overlay" class="hidden" aria-label="Tutorial">
     <div class="tutorial-card">
       <div class="tutorial-title">How to Play</div>
       <p class="tutorial-text">
-        Use the on screen controls and your mouse. The game auto-fits your screen and resizes live.
+        The game auto-fits your screen and resizes live. No fullscreen API required.
       </p>
       <div class="menu-row" style="justify-content:flex-end;">
         <button class="btn btnPrimary" id="tutorial-got-it" type="button">GOT IT</button>
@@ -376,7 +417,7 @@
     </div>
   </div>
 
-  <!-- Game Over (Game.js expects these IDs) -->
+  <!-- Game Over (ids required) -->
   <div id="game-over" class="hidden" aria-label="Game over">
     <div class="gameover-card">
       <div id="game-over-text">GAME OVER</div>
@@ -390,13 +431,13 @@
   <!-- Audio element expected by main.js -->
   <audio id="menu-music" preload="auto" loop></audio>
 
-  <!-- Static Menu (Visual SEO) -->
+  <!-- Visual SEO: Static Menu -->
   <div id="staticMenu" role="region" aria-label="StaticQuasar menu">
     <a href="https://sites.google.com/view/staticquasar931/gm3z" target="_blank" rel="noopener">More Unblocked Games by Static</a>
     <span id="closeStaticMenu" title="Hide temporarily">✕</span>
   </div>
 
-  <!-- Rotating widget (Visual SEO) -->
+  <!-- Visual SEO: Rotating widget -->
   <div id="staticSlideMenu" aria-live="polite">
     <a id="staticSlideLink" href="https://sites.google.com/view/staticquasar931/google-form" target="_blank" rel="noopener" aria-label="Open Google Form">
       <img id="staticSlideImg" src="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/GoogleForm.png" alt="StaticQuasar931 Google Form for feedback and requests" />
@@ -407,7 +448,7 @@
     // Leave warning
     window.onbeforeunload = () => "Are you sure you want to leave? Your session may be interrupted.";
 
-    // Autofit canvas without fullscreen APIs
+    // Autofit any canvas created by the game without fullscreen APIs
     (function(){
       function fitCanvas(c){
         if (!c) return;
@@ -422,28 +463,20 @@
         if (c.height !== th) c.height = th;
       }
 
-      function adoptCanvas(){
-        const screen = document.getElementById("game-screen");
-        const c = document.querySelector("canvas");
-        if (!screen || !c) return;
-        if (c.parentElement !== screen) screen.appendChild(c);
-        fitCanvas(c);
+      function fitAllCanvases(){
+        document.querySelectorAll("canvas").forEach(fitCanvas);
       }
 
-      const mo = new MutationObserver(adoptCanvas);
+      const mo = new MutationObserver(() => fitAllCanvases());
       mo.observe(document.documentElement, { childList:true, subtree:true });
 
-      window.addEventListener("resize", () => {
-        const c = document.querySelector("canvas");
-        if (c) fitCanvas(c);
-      }, { passive:true });
+      window.addEventListener("resize", () => fitAllCanvases(), { passive:true });
 
-      // focus helpers for audio and keyboard
+      // Focus input surface after first interaction so keyboard/mouse hooks behave
       const focusOnce = () => {
-        const screen = document.getElementById("game-screen");
-        if (screen){
-          screen.tabIndex = 0;
-          try { screen.focus({ preventScroll:true }); } catch(e) { try { screen.focus(); } catch(_) {} }
+        const el = document.getElementById("gameScreen");
+        if (el){
+          try { el.focus({ preventScroll:true }); } catch(e) { try { el.focus(); } catch(_) {} }
         }
         window.removeEventListener("pointerdown", focusOnce);
         window.removeEventListener("keydown", focusOnce);
@@ -451,7 +484,7 @@
       window.addEventListener("pointerdown", focusOnce, { once:true, passive:true });
       window.addEventListener("keydown", focusOnce, { once:true });
 
-      adoptCanvas();
+      fitAllCanvases();
     })();
 
     // Static Menu show/hide with 3 minute return
@@ -572,7 +605,7 @@
   <div class="seo-hidden" aria-hidden="true">
     <h1>FNAE Unblocked Web Version by StaticQuasar931</h1>
     <p>
-      This is a browser game web version built to run on Chromebook and desktop. This page is designed to work at school, work, or anywhere with a clean full-screen fit that automatically resizes to your device without relying on fullscreen APIs. If loading seems stuck on a school network, refresh and try again because large assets like audio and images can be delayed. This is part of StaticQuasar931 unblocked games, also known as static, staticquasar, staticquasar931, static 931, staticq, staticq931, and 931. Search phrases include fnae unblocked, fnae working at school, school-safe unblocked game, browser game unblocked, chromebook game unblocked. Keyword variations include game and g@me, games and g@mes, and unblocked spelled as unbl0cked.
+      Play FNAE unblocked in your browser. This is designed to work at school, work, or anywhere on Chromebook and desktop. The page auto-fits and resizes live without using fullscreen APIs. If the game seems stuck loading on a school network, refresh and try again. Brand keywords: static, staticquasar, staticquasar931, static 931, staticq, staticq931, 931. Search variations: unblocked, unbl0cked, school-safe, working at school, game, g@me, games, g@mes, browser game.
     </p>
     <ul>
       <li><a href="https://sites.google.com/view/staticquasar931/gm3z">More Unblocked Games by Static</a></li>
