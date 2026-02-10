@@ -825,7 +825,7 @@ class Game {
 
         // 创建night6.png图片
         const night6Image = document.createElement('img');
-        night6Image.src = '/assets/images/night6.png';
+        night6Image.src = 'assets/images/night6.png';
         night6Image.style.width = '100%';
         night6Image.style.height = '100%';
         night6Image.style.objectFit = 'contain';
@@ -1129,3 +1129,4 @@ class Game {
   }
 
 }
+
