@@ -6,6 +6,100 @@ let staticNoise;
 let loadedAssets = 0;
 let totalAssets = 0;
 
+/* =========================
+   StaticQuasar931 Watermark
+   ========================= */
+(function initStaticQuasarWatermark(){
+  function ensureWatermark(){
+    if (document.getElementById("sq931-watermark")) return;
+
+    const wm = document.createElement("a");
+    wm.id = "sq931-watermark";
+    wm.href = "https://sites.google.com/view/staticquasar931/gm3z";
+    wm.target = "_blank";
+    wm.rel = "noopener";
+    wm.textContent = "Hosted by StaticQuasar931";
+    wm.setAttribute("aria-label", "Hosted by StaticQuasar931 - More games");
+
+    Object.assign(wm.style, {
+      position: "fixed",
+      left: "12px",
+      bottom: "12px",
+      zIndex: "99998",
+      padding: "8px 10px",
+      borderRadius: "10px",
+      background: "rgba(0,0,0,0.55)",
+      border: "1px solid rgba(94,225,255,0.30)",
+      color: "#eaf4ff",
+      fontFamily: "system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif",
+      fontSize: "12px",
+      fontWeight: "800",
+      letterSpacing: "0.3px",
+      textDecoration: "none",
+      textShadow: "0 1px 2px rgba(0,0,0,0.9)",
+      boxShadow: "0 0 10px rgba(94,225,255,0.22), 0 10px 22px rgba(0,0,0,0.35)",
+      userSelect: "none",
+      WebkitUserSelect: "none",
+      MozUserSelect: "none",
+      msUserSelect: "none",
+      cursor: "pointer",
+      opacity: "0.9"
+    });
+
+    wm.addEventListener("mouseenter", () => { wm.style.opacity = "1"; });
+    wm.addEventListener("mouseleave", () => { wm.style.opacity = "0.9"; });
+
+    document.body.appendChild(wm);
+
+    // Hidden note #1 (far away from watermark)
+    if (!document.getElementById("sq931-note-1")) {
+      const n1 = document.createElement("div");
+      n1.id = "sq931-note-1";
+      n1.textContent = "38fh3b87ejeef07t9j";
+      Object.assign(n1.style, {
+        position: "fixed",
+        top: "6px",
+        right: "6px",
+        width: "1px",
+        height: "1px",
+        overflow: "hidden",
+        opacity: "0.001",
+        pointerEvents: "none",
+        userSelect: "none",
+        whiteSpace: "nowrap"
+      });
+      document.body.appendChild(n1);
+    }
+
+    // Hidden note #2 (different area from note #1 and watermark)
+    if (!document.getElementById("sq931-note-2")) {
+      const n2 = document.createElement("div");
+      n2.id = "sq931-note-2";
+      n2.textContent = "38dfh3hdbs8t7a4t6iecjqeusaesfa0r79t391j";
+      Object.assign(n2.style, {
+        position: "fixed",
+        top: "50%",
+        left: "6px",
+        width: "1px",
+        height: "1px",
+        overflow: "hidden",
+        opacity: "0.001",
+        pointerEvents: "none",
+        userSelect: "none",
+        whiteSpace: "nowrap",
+        transform: "translateY(-50%)"
+      });
+      document.body.appendChild(n2);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", ensureWatermark, { once: true });
+  } else {
+    ensureWatermark();
+  }
+})();
+
 // 禁用浏览器默认行为，提升游戏体验
 function disableBrowserDefaults() {
   // 禁用右键菜单
@@ -157,7 +251,7 @@ async function preloadGameAssets() {
     'assets/images/menubackground.png',
     'assets/images/cutscene.png',
     'assets/images/fa3.png',
-    'assets/images/FNAE-Map-layout.png', 
+    'assets/images/FNAE-Map-layout.png',
     'assets/images/enemyep1.png',
     'assets/images/ep1.png',
     'assets/images/ep4.png',
@@ -354,6 +448,3 @@ window.addEventListener('message', (event) => {
   }
 
 });
-
-
-
