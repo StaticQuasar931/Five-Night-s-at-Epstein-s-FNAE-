@@ -157,7 +157,7 @@ async function preloadGameAssets() {
     'assets/images/menubackground.png',
     'assets/images/cutscene.png',
     'assets/images/fa3.png',
-    'assets/images/FNAE-Map-layout.png',
+    'assets/images/FNAE-Map-layout.png', 
     'assets/images/enemyep1.png',
     'assets/images/ep1.png',
     'assets/images/ep4.png',
@@ -352,4 +352,5 @@ window.addEventListener('message', (event) => {
       });
     }
   }
+
 });
