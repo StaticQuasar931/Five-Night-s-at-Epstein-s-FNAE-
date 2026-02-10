@@ -71,8 +71,8 @@ class AssetManager {
   getBasePath() {
     // 检查是否在 iframe 中
     const currentPath = window.location.pathname;
-    if (currentPath.includes('/FNAE-HTML5-1.1.5/')) {
-      return '/FNAE-HTML5-1.1.5/';
+    if (currentPath.includes('/Five-Night-s-at-Epstein-s-FNAE-/')) {
+      return '/Five-Night-s-at-Epstein-s-FNAE-/';
     }
     // 本地开发环境
     return './';
@@ -107,4 +107,5 @@ class AssetManager {
       this.sounds[key].volume = volume;
     }
   }
+
 }
