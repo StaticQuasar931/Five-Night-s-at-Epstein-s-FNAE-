@@ -25,20 +25,41 @@
 
   <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" />
 
-  <!-- IMPORTANT: style.css does NOT exist in this repo, so do not link it (prevents 404 spam) -->
+  <!-- NOTE: style.css does not exist in this repo, so do not link it -->
 
   <style>
     html, body{
       margin:0;
       padding:0;
       height:100%;
+      width:100%;
       background:#000;
       overflow:hidden;
       -webkit-text-size-adjust:100%;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
 
-    /* Minimal preloader styling so it is not unstyled (since style.css is missing) */
+    /* Input surface the game expects */
+    #gameScreen{
+      position:fixed;
+      inset:0;
+      width:100vw;
+      height:100vh;
+      z-index:1;
+      background:#000;
+      outline:none;
+      display:block;
+    }
+
+    /* If the game uses a canvas, keep it filling the viewport */
+    canvas{
+      display:block;
+      width:100vw;
+      height:100vh;
+      touch-action:none;
+    }
+
+    /* Preloader (minimal styling, since style.css is missing) */
     #preloader{
       position:fixed;
       inset:0;
@@ -46,12 +67,13 @@
       align-items:center;
       justify-content:center;
       background:#000;
-      z-index:50;
+      z-index:80;
     }
     .preloader-content{
       text-align:center;
       color:#eaf4ff;
-      width:min(520px, 92vw);
+      width:min(560px, 92vw);
+      padding:18px 16px;
     }
     .preloader-logo{
       font-weight:900;
@@ -60,6 +82,13 @@
       font-size:28px;
       margin-bottom:14px;
       text-shadow:0 0 18px rgba(94,225,255,.25);
+      user-select:none;
+    }
+    .preloader-sub{
+      font-size:12px;
+      opacity:.9;
+      margin:6px 0 14px;
+      user-select:none;
     }
     .preloader-spinner{
       display:flex;
@@ -87,6 +116,7 @@
       font-size:13px;
       opacity:.95;
       margin-top:8px;
+      user-select:none;
     }
     .preloader-progress{
       width:100%;
@@ -107,26 +137,73 @@
       font-weight:900;
       font-size:12px;
       opacity:.9;
+      user-select:none;
     }
 
-    /* Main input surface the game expects (or will be aliased to) */
-    #gameScreen{
+    /* Start overlay and buttons that Game.js likely expects */
+    #startOverlay{
       position:fixed;
       inset:0;
-      width:100vw;
-      height:100vh;
-      z-index:1;
-      background:transparent;
-      outline:none;
-      display:block;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,.72);
+      z-index:70;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .25s ease;
     }
-
-    /* Any canvas should visually fill the viewport */
-    canvas{
-      display:block;
-      width:100vw;
-      height:100vh;
-      touch-action:none;
+    #startOverlay.ready{
+      opacity:1;
+      pointer-events:auto;
+    }
+    .startCard{
+      width:min(560px, 92vw);
+      padding:18px 16px;
+      border-radius:14px;
+      background:linear-gradient(135deg, rgba(20,20,28,.92), rgba(20,20,28,.70));
+      border:1px solid rgba(94,225,255,.25);
+      box-shadow:0 0 12px rgba(94,225,255,.35), 0 10px 30px rgba(0,0,0,.55);
+      color:#eaf4ff;
+      text-align:center;
+    }
+    .startTitle{
+      font-weight:950;
+      letter-spacing:1.2px;
+      font-size:18px;
+      margin:0 0 10px;
+      user-select:none;
+    }
+    .startNote{
+      font-size:12px;
+      opacity:.92;
+      line-height:1.4;
+      margin:0 0 12px;
+      user-select:none;
+    }
+    .startRow{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+    .btn{
+      appearance:none;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.07);
+      color:#eaf4ff;
+      font-weight:900;
+      letter-spacing:.6px;
+      padding:10px 14px;
+      border-radius:12px;
+      cursor:pointer;
+      user-select:none;
+      transition:transform .12s ease, background .12s ease;
+    }
+    .btn:active{ transform:scale(.98) }
+    .btnPrimary{
+      border:1px solid rgba(94,225,255,.35);
+      background:rgba(94,225,255,.12);
     }
 
     /* ===========================
@@ -138,6 +215,7 @@
       --shadow:0 10px 30px rgba(0,0,0,.4);
     }
 
+    /* Static Menu (top-left) */
     #staticMenu{
       position:fixed; left:12px; top:12px; z-index:9999;
       display:flex; gap:10px; align-items:center; user-select:none;
@@ -154,6 +232,7 @@
     }
     @keyframes menuEnter{ from{opacity:0; transform:translateY(-8px)} to{opacity:1; transform:translateY(0)} }
 
+    /* Rotating slide-in widget (bottom-right) */
     #staticSlideMenu{
       position:fixed; bottom:24px; right:24px; z-index:9999;
       width:100px; height:100px; pointer-events:none; opacity:0;
@@ -179,15 +258,17 @@
       #staticMenu{ font-size:13px; padding:8px 12px }
       #staticSlideMenu{ width:88px; height:88px }
       .preloader-logo{ font-size:24px }
+      .startTitle{ font-size:16px }
     }
   </style>
 </head>
 
 <body>
-  <!-- Preloader (your game JS can hide this when ready) -->
+  <!-- Preloader -->
   <div id="preloader">
     <div class="preloader-content">
       <div class="preloader-logo">FIVE NIGHTS<br />AT EPSTEIN&#39;S</div>
+      <div class="preloader-sub">If it feels stuck, give it a moment, then refresh.</div>
       <div class="preloader-spinner" aria-hidden="true">
         <div class="spinner-ring"></div>
         <div class="spinner-ring"></div>
@@ -201,8 +282,28 @@
     </div>
   </div>
 
-  <!-- Game input surface (we also alias other expected IDs to this) -->
+  <!-- Game input surface -->
   <div id="gameScreen" aria-label="Game screen"></div>
+
+  <!-- Start overlay (also provides common IDs Game.js may be expecting) -->
+  <div id="startOverlay" aria-label="Start menu">
+    <div class="startCard">
+      <div class="startTitle">Ready to Play</div>
+      <p class="startNote">
+        Tap Play to start. The game auto-fits your screen and resizes live.
+      </p>
+      <div class="startRow">
+        <!-- Common start button IDs (Game.js error says this.startBtn is null, so we provide several likely IDs) -->
+        <button class="btn btnPrimary" id="startBtn" type="button">PLAY</button>
+        <button class="btn btnPrimary" id="startButton" type="button" style="display:none">PLAY</button>
+        <button class="btn btnPrimary" id="playBtn" type="button" style="display:none">PLAY</button>
+
+        <!-- Safe utility buttons (harmless if unused) -->
+        <button class="btn" id="muteBtn" type="button">MUTE</button>
+        <button class="btn" id="restartBtn" type="button">RESTART</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Static Menu -->
   <div id="staticMenu" role="region" aria-label="StaticQuasar menu">
@@ -221,34 +322,31 @@
     /* Required */
     window.onbeforeunload = () => "Are you sure you want to leave? Your session may be interrupted.";
 
-    /* HARD FIX: InputHandler is looking up some element ID and calling addEventListener on it.
-       Your error proves the lookup is returning null.
-       We do NOT know which ID it uses (since we cannot fetch your JS here), so we alias common IDs to #gameScreen. */
+    /* Fix 1: Provide fallback DOM elements Game.js / InputHandler.js might query by ID */
     (function(){
       const realGet = document.getElementById.bind(document);
+
       const surface = realGet("gameScreen");
 
-      const alias = new Set([
-        "gameScreen",
-        "gamescreen",
-        "game-screen",
-        "game_screen",
-        "GameScreen",
-        "screen",
-        "game",
-        "gameRoot",
-        "game-root",
-        "gameCanvas",
-        "game-canvas",
-        "canvas",
-        "mainCanvas",
-        "main-canvas"
+      const aliasToSurface = new Set([
+        "gameScreen","gamescreen","game-screen","game_screen","GameScreen",
+        "screen","game","gameRoot","game-root","gameCanvas","game-canvas",
+        "canvas","mainCanvas","main-canvas"
+      ]);
+
+      const startBtn = realGet("startBtn");
+      const aliasToStart = new Set([
+        "startBtn","startButton","start","playBtn","playButton","play"
       ]);
 
       document.getElementById = function(id){
         const found = realGet(id);
         if (found) return found;
-        if (surface && typeof id === "string" && alias.has(id)) return surface;
+
+        if (typeof id === "string"){
+          if (surface && aliasToSurface.has(id)) return surface;
+          if (startBtn && aliasToStart.has(id)) return startBtn;
+        }
         return null;
       };
 
@@ -256,7 +354,7 @@
         surface.tabIndex = 0;
 
         const focusOnce = () => {
-          try { surface.focus({ preventScroll: true }); } catch(e) { try { surface.focus(); } catch(_) {} }
+          try { surface.focus({ preventScroll:true }); } catch(e) { try { surface.focus(); } catch(_) {} }
           window.removeEventListener("pointerdown", focusOnce);
           window.removeEventListener("keydown", focusOnce);
         };
@@ -294,6 +392,74 @@
           const c = document.querySelector("canvas");
           if (c) fitCanvas(c);
         }, { passive:true });
+      }
+    })();
+
+    /* Fix 2: Make the start overlay appear once scripts are loaded and a canvas exists */
+    (function(){
+      const pre = document.getElementById("preloader");
+      const overlay = document.getElementById("startOverlay");
+      const startBtn = document.getElementById("startBtn");
+      const muteBtn = document.getElementById("muteBtn");
+      const restartBtn = document.getElementById("restartBtn");
+
+      function hidePreloaderSoon(){
+        if (!pre) return;
+        setTimeout(() => {
+          pre.style.display = "none";
+        }, 120);
+      }
+
+      function showStart(){
+        if (!overlay) return;
+        overlay.classList.add("ready");
+      }
+
+      function hideStart(){
+        if (!overlay) return;
+        overlay.classList.remove("ready");
+      }
+
+      function tryHidePreloaderWhenCanvasAppears(){
+        const check = () => {
+          const c = document.querySelector("canvas");
+          if (c){
+            hidePreloaderSoon();
+            showStart();
+            return true;
+          }
+          return false;
+        };
+        if (check()) return;
+        const mo = new MutationObserver(() => { if (check()) mo.disconnect(); });
+        mo.observe(document.documentElement, { childList:true, subtree:true });
+      }
+
+      tryHidePreloaderWhenCanvasAppears();
+
+      if (startBtn){
+        startBtn.addEventListener("click", () => {
+          hideStart();
+          const surface = document.getElementById("gameScreen");
+          if (surface){
+            try { surface.focus({ preventScroll:true }); } catch(e) { try { surface.focus(); } catch(_) {} }
+          }
+        });
+      }
+
+      if (muteBtn){
+        muteBtn.addEventListener("click", () => {
+          try{
+            const aud = Array.from(document.querySelectorAll("audio, video"));
+            aud.forEach(a => { a.muted = !a.muted; });
+          }catch(e){}
+        });
+      }
+
+      if (restartBtn){
+        restartBtn.addEventListener("click", () => {
+          location.reload();
+        });
       }
     })();
 
@@ -402,7 +568,7 @@
     })();
   </script>
 
-  <!-- Game scripts (keep your original order) -->
+  <!-- Game scripts (original order) -->
   <script src="js/AssetManager.js"></script>
   <script src="js/CameraSystem.js"></script>
   <script src="js/EnemyAI.js"></script>
