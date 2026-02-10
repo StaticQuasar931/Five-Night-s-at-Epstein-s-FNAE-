@@ -5,28 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
   <!-- SEO -->
-  <title>Five Nights at Epstein&#39;s (FNAE) Unblocked Web Version | StaticQuasar931</title>
-  <meta name="description" content="Play Five Nights at Epstein&#39;s (FNAE) unblocked in your browser. A school-safe horror style web build that works at school, work, or anywhere. More unblocked games by StaticQuasar931." />
-  <meta name="keywords" content="five nights at epstein's unblocked, fnae unblocked, fnae game unblocked, five nights at epstein's game, fnae web version, fnae html5, fnae browser, fnae working at school, fnae school, fnae school-safe, horror game unblocked, scary game unblocked, static, staticquasar, staticquasar931, static 931, staticq, staticq931, 931, unblocked, unbl0cked, games, g@mes, game, g@me, browser game, chromebook game, play at school" />
+  <title>FNAE Unblocked Web Version | StaticQuasar931</title>
+  <meta name="description" content="Play FNAE unblocked in your browser. A school-safe horror style web build that works at school, work, or anywhere. More unblocked games by StaticQuasar931." />
+  <meta name="keywords" content="fnae unblocked, fnae game unblocked, fnae web version, fnae html5, fnae browser, fnae working at school, fnae school, fnae school-safe, horror game unblocked, scary game unblocked, static, staticquasar, staticquasar931, static 931, staticq, staticq931, 931, unblocked, unbl0cked, games, g@mes, game, g@me, browser game, chromebook game, play at school" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="theme-color" content="#000000" />
   <link rel="canonical" href="https://staticquasar931.github.io/Five-Night-s-at-Epstein-s-FNAE-/" />
 
   <!-- Social -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Five Nights at Epstein&#39;s (FNAE) Unblocked Web Version | StaticQuasar931" />
+  <meta property="og:title" content="FNAE Unblocked Web Version | StaticQuasar931" />
   <meta property="og:description" content="Play FNAE unblocked in your browser. Works at school, work, or anywhere. More unblocked games by StaticQuasar931." />
   <meta property="og:url" content="https://staticquasar931.github.io/Five-Night-s-at-Epstein-s-FNAE-/" />
   <meta property="og:image" content="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Five Nights at Epstein&#39;s (FNAE) Unblocked Web Version | StaticQuasar931" />
+  <meta name="twitter:title" content="FNAE Unblocked Web Version | StaticQuasar931" />
   <meta name="twitter:description" content="Play FNAE unblocked in your browser. Works at school, work, or anywhere." />
   <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" />
 
   <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" />
 
-  <!-- NOTE: style.css does not exist in this repo, so do not link it -->
-
+  <!-- No style.css in repo, so everything needed is inlined -->
   <style>
     html, body{
       margin:0;
@@ -37,21 +36,23 @@
       overflow:hidden;
       -webkit-text-size-adjust:100%;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:#eaf4ff;
     }
 
-    /* Input surface the game expects */
-    #gameScreen{
+    .hidden{ display:none !important; }
+
+    /* Game containers expected by Game.js */
+    #game-screen{
       position:fixed;
       inset:0;
       width:100vw;
       height:100vh;
       z-index:1;
       background:#000;
-      outline:none;
-      display:block;
+      overflow:hidden;
     }
 
-    /* If the game uses a canvas, keep it filling the viewport */
+    /* If a canvas is created by JS, keep it full screen */
     canvas{
       display:block;
       width:100vw;
@@ -59,7 +60,7 @@
       touch-action:none;
     }
 
-    /* Preloader (minimal styling, since style.css is missing) */
+    /* Preloader */
     #preloader{
       position:fixed;
       inset:0;
@@ -68,27 +69,23 @@
       justify-content:center;
       background:#000;
       z-index:80;
+      opacity:1;
+      transition:opacity .5s ease;
     }
+    #preloader.fade-out{ opacity:0; pointer-events:none; }
     .preloader-content{
       text-align:center;
-      color:#eaf4ff;
       width:min(560px, 92vw);
       padding:18px 16px;
     }
     .preloader-logo{
-      font-weight:900;
+      font-weight:950;
       letter-spacing:2px;
       line-height:1.05;
       font-size:28px;
       margin-bottom:14px;
+      user-select:none;
       text-shadow:0 0 18px rgba(94,225,255,.25);
-      user-select:none;
-    }
-    .preloader-sub{
-      font-size:12px;
-      opacity:.9;
-      margin:6px 0 14px;
-      user-select:none;
     }
     .preloader-spinner{
       display:flex;
@@ -140,52 +137,46 @@
       user-select:none;
     }
 
-    /* Start overlay and buttons that Game.js likely expects */
-    #startOverlay{
+    /* Main Menu (expected by Game.js: #main-menu + buttons) */
+    #main-menu{
       position:fixed;
       inset:0;
+      z-index:40;
       display:flex;
       align-items:center;
       justify-content:center;
-      background:rgba(0,0,0,.72);
-      z-index:70;
-      opacity:0;
-      pointer-events:none;
-      transition:opacity .25s ease;
+      background:rgba(0,0,0,.62);
+      backdrop-filter:blur(2px);
     }
-    #startOverlay.ready{
-      opacity:1;
-      pointer-events:auto;
-    }
-    .startCard{
-      width:min(560px, 92vw);
+    .menu-card{
+      width:min(620px, 92vw);
       padding:18px 16px;
       border-radius:14px;
       background:linear-gradient(135deg, rgba(20,20,28,.92), rgba(20,20,28,.70));
       border:1px solid rgba(94,225,255,.25);
       box-shadow:0 0 12px rgba(94,225,255,.35), 0 10px 30px rgba(0,0,0,.55);
-      color:#eaf4ff;
       text-align:center;
     }
-    .startTitle{
+    .menu-title{
       font-weight:950;
       letter-spacing:1.2px;
       font-size:18px;
-      margin:0 0 10px;
+      margin:0 0 8px;
       user-select:none;
     }
-    .startNote{
+    .menu-sub{
       font-size:12px;
-      opacity:.92;
+      opacity:.9;
       line-height:1.4;
       margin:0 0 12px;
       user-select:none;
     }
-    .startRow{
+    .menu-row{
       display:flex;
       gap:10px;
       justify-content:center;
       flex-wrap:wrap;
+      align-items:center;
     }
     .btn{
       appearance:none;
@@ -205,6 +196,76 @@
       border:1px solid rgba(94,225,255,.35);
       background:rgba(94,225,255,.12);
     }
+    .icon-star{
+      display:inline-block;
+      width:18px;
+      height:18px;
+      border-radius:999px;
+      background:rgba(255,215,0,.15);
+      border:1px solid rgba(255,215,0,.35);
+      box-shadow:0 0 10px rgba(255,215,0,.25);
+      position:relative;
+      top:2px;
+      margin-left:6px;
+    }
+
+    /* Tutorial overlay (expected ids) */
+    #tutorial-overlay{
+      position:fixed;
+      inset:0;
+      z-index:45;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,.70);
+    }
+    .tutorial-card{
+      width:min(620px, 92vw);
+      padding:18px 16px;
+      border-radius:14px;
+      background:linear-gradient(135deg, rgba(20,20,28,.92), rgba(20,20,28,.70));
+      border:1px solid rgba(94,225,255,.20);
+      box-shadow:0 10px 30px rgba(0,0,0,.55);
+      text-align:left;
+    }
+    .tutorial-title{
+      margin:0 0 8px;
+      font-size:16px;
+      font-weight:950;
+      letter-spacing:.8px;
+    }
+    .tutorial-text{
+      margin:0 0 12px;
+      font-size:12px;
+      opacity:.92;
+      line-height:1.5;
+    }
+
+    /* Game Over overlay (expected ids) */
+    #game-over{
+      position:fixed;
+      inset:0;
+      z-index:60;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,.78);
+    }
+    .gameover-card{
+      width:min(520px, 92vw);
+      padding:18px 16px;
+      border-radius:14px;
+      background:linear-gradient(135deg, rgba(20,20,28,.92), rgba(20,20,28,.70));
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:0 10px 30px rgba(0,0,0,.55);
+      text-align:center;
+    }
+    #game-over-text{
+      font-weight:950;
+      letter-spacing:1px;
+      margin:0 0 12px;
+      font-size:16px;
+    }
 
     /* ===========================
        VISUAL SEO (Default Standard)
@@ -215,7 +276,6 @@
       --shadow:0 10px 30px rgba(0,0,0,.4);
     }
 
-    /* Static Menu (top-left) */
     #staticMenu{
       position:fixed; left:12px; top:12px; z-index:9999;
       display:flex; gap:10px; align-items:center; user-select:none;
@@ -232,7 +292,6 @@
     }
     @keyframes menuEnter{ from{opacity:0; transform:translateY(-8px)} to{opacity:1; transform:translateY(0)} }
 
-    /* Rotating slide-in widget (bottom-right) */
     #staticSlideMenu{
       position:fixed; bottom:24px; right:24px; z-index:9999;
       width:100px; height:100px; pointer-events:none; opacity:0;
@@ -258,17 +317,16 @@
       #staticMenu{ font-size:13px; padding:8px 12px }
       #staticSlideMenu{ width:88px; height:88px }
       .preloader-logo{ font-size:24px }
-      .startTitle{ font-size:16px }
+      .menu-title{ font-size:16px }
     }
   </style>
 </head>
 
 <body>
-  <!-- Preloader -->
+  <!-- Preloader (main.js looks for these exact IDs) -->
   <div id="preloader">
     <div class="preloader-content">
       <div class="preloader-logo">FIVE NIGHTS<br />AT EPSTEIN&#39;S</div>
-      <div class="preloader-sub">If it feels stuck, give it a moment, then refresh.</div>
       <div class="preloader-spinner" aria-hidden="true">
         <div class="spinner-ring"></div>
         <div class="spinner-ring"></div>
@@ -282,36 +340,63 @@
     </div>
   </div>
 
-  <!-- Game input surface -->
-  <div id="gameScreen" aria-label="Game screen"></div>
+  <!-- Main Menu (Game.js expects these IDs) -->
+  <div id="main-menu">
+    <div class="menu-card">
+      <div class="menu-title">FNAE</div>
+      <div class="menu-sub">
+        Works at school, work, or anywhere. If audio does not start, click once, then press Play.
+      </div>
 
-  <!-- Start overlay (also provides common IDs Game.js may be expecting) -->
-  <div id="startOverlay" aria-label="Start menu">
-    <div class="startCard">
-      <div class="startTitle">Ready to Play</div>
-      <p class="startNote">
-        Tap Play to start. The game auto-fits your screen and resizes live.
-      </p>
-      <div class="startRow">
-        <!-- Common start button IDs (Game.js error says this.startBtn is null, so we provide several likely IDs) -->
-        <button class="btn btnPrimary" id="startBtn" type="button">PLAY</button>
-        <button class="btn btnPrimary" id="startButton" type="button" style="display:none">PLAY</button>
-        <button class="btn btnPrimary" id="playBtn" type="button" style="display:none">PLAY</button>
+      <div class="menu-row" style="margin-bottom:10px;">
+        <button class="btn btnPrimary" id="start-game" type="button">START</button>
+        <button class="btn hidden" id="continue-game" type="button">CONTINUE</button>
+      </div>
 
-        <!-- Safe utility buttons (harmless if unused) -->
-        <button class="btn" id="muteBtn" type="button">MUTE</button>
-        <button class="btn" id="restartBtn" type="button">RESTART</button>
+      <div class="menu-row">
+        <button class="btn hidden" id="special-night-btn" type="button">SPECIAL NIGHT<span id="star-icon" class="icon-star hidden"></span></button>
+        <span id="star-icon-2" class="icon-star hidden" title="Completed"></span>
       </div>
     </div>
   </div>
 
-  <!-- Static Menu -->
+  <!-- Game Screen (Game.js expects #game-screen) -->
+  <div id="game-screen" aria-label="Game screen"></div>
+
+  <!-- Tutorial Overlay (Game.js expects these IDs) -->
+  <div id="tutorial-overlay" class="hidden" aria-label="Tutorial">
+    <div class="tutorial-card">
+      <div class="tutorial-title">How to Play</div>
+      <p class="tutorial-text">
+        Use the on screen controls and your mouse. The game auto-fits your screen and resizes live.
+      </p>
+      <div class="menu-row" style="justify-content:flex-end;">
+        <button class="btn btnPrimary" id="tutorial-got-it" type="button">GOT IT</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Over (Game.js expects these IDs) -->
+  <div id="game-over" class="hidden" aria-label="Game over">
+    <div class="gameover-card">
+      <div id="game-over-text">GAME OVER</div>
+      <div class="menu-row">
+        <button class="btn btnPrimary" id="restart" type="button">RESTART</button>
+        <button class="btn" id="main-menu-btn" type="button">MAIN MENU</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio element expected by main.js -->
+  <audio id="menu-music" preload="auto" loop></audio>
+
+  <!-- Static Menu (Visual SEO) -->
   <div id="staticMenu" role="region" aria-label="StaticQuasar menu">
     <a href="https://sites.google.com/view/staticquasar931/gm3z" target="_blank" rel="noopener">More Unblocked Games by Static</a>
     <span id="closeStaticMenu" title="Hide temporarily">✕</span>
   </div>
 
-  <!-- Rotating widget -->
+  <!-- Rotating widget (Visual SEO) -->
   <div id="staticSlideMenu" aria-live="polite">
     <a id="staticSlideLink" href="https://sites.google.com/view/staticquasar931/google-form" target="_blank" rel="noopener" aria-label="Open Google Form">
       <img id="staticSlideImg" src="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/GoogleForm.png" alt="StaticQuasar931 Google Form for feedback and requests" />
@@ -319,151 +404,57 @@
   </div>
 
   <script>
-    /* Required */
+    // Leave warning
     window.onbeforeunload = () => "Are you sure you want to leave? Your session may be interrupted.";
 
-    /* Fix 1: Provide fallback DOM elements Game.js / InputHandler.js might query by ID */
+    // Autofit canvas without fullscreen APIs
     (function(){
-      const realGet = document.getElementById.bind(document);
+      function fitCanvas(c){
+        if (!c) return;
+        const dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
+        const w = Math.max(1, Math.floor(window.innerWidth));
+        const h = Math.max(1, Math.floor(window.innerHeight));
+        c.style.width = "100vw";
+        c.style.height = "100vh";
+        const tw = Math.floor(w * dpr);
+        const th = Math.floor(h * dpr);
+        if (c.width !== tw) c.width = tw;
+        if (c.height !== th) c.height = th;
+      }
 
-      const surface = realGet("gameScreen");
+      function adoptCanvas(){
+        const screen = document.getElementById("game-screen");
+        const c = document.querySelector("canvas");
+        if (!screen || !c) return;
+        if (c.parentElement !== screen) screen.appendChild(c);
+        fitCanvas(c);
+      }
 
-      const aliasToSurface = new Set([
-        "gameScreen","gamescreen","game-screen","game_screen","GameScreen",
-        "screen","game","gameRoot","game-root","gameCanvas","game-canvas",
-        "canvas","mainCanvas","main-canvas"
-      ]);
+      const mo = new MutationObserver(adoptCanvas);
+      mo.observe(document.documentElement, { childList:true, subtree:true });
 
-      const startBtn = realGet("startBtn");
-      const aliasToStart = new Set([
-        "startBtn","startButton","start","playBtn","playButton","play"
-      ]);
+      window.addEventListener("resize", () => {
+        const c = document.querySelector("canvas");
+        if (c) fitCanvas(c);
+      }, { passive:true });
 
-      document.getElementById = function(id){
-        const found = realGet(id);
-        if (found) return found;
-
-        if (typeof id === "string"){
-          if (surface && aliasToSurface.has(id)) return surface;
-          if (startBtn && aliasToStart.has(id)) return startBtn;
+      // focus helpers for audio and keyboard
+      const focusOnce = () => {
+        const screen = document.getElementById("game-screen");
+        if (screen){
+          screen.tabIndex = 0;
+          try { screen.focus({ preventScroll:true }); } catch(e) { try { screen.focus(); } catch(_) {} }
         }
-        return null;
+        window.removeEventListener("pointerdown", focusOnce);
+        window.removeEventListener("keydown", focusOnce);
       };
+      window.addEventListener("pointerdown", focusOnce, { once:true, passive:true });
+      window.addEventListener("keydown", focusOnce, { once:true });
 
-      if (surface){
-        surface.tabIndex = 0;
-
-        const focusOnce = () => {
-          try { surface.focus({ preventScroll:true }); } catch(e) { try { surface.focus(); } catch(_) {} }
-          window.removeEventListener("pointerdown", focusOnce);
-          window.removeEventListener("keydown", focusOnce);
-        };
-        window.addEventListener("pointerdown", focusOnce, { once:true, passive:true });
-        window.addEventListener("keydown", focusOnce, { once:true });
-
-        function fitCanvas(c){
-          if (!c) return;
-          const dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
-          const w = Math.max(1, Math.floor(window.innerWidth));
-          const h = Math.max(1, Math.floor(window.innerHeight));
-
-          c.style.width = "100vw";
-          c.style.height = "100vh";
-
-          const targetW = Math.floor(w * dpr);
-          const targetH = Math.floor(h * dpr);
-
-          if (c.width !== targetW) c.width = targetW;
-          if (c.height !== targetH) c.height = targetH;
-        }
-
-        function adoptCanvas(){
-          const c = document.querySelector("canvas");
-          if (!c) return;
-          if (c.parentElement !== surface) surface.appendChild(c);
-          fitCanvas(c);
-        }
-
-        const mo = new MutationObserver(adoptCanvas);
-        mo.observe(document.documentElement, { childList:true, subtree:true });
-
-        adoptCanvas();
-        window.addEventListener("resize", () => {
-          const c = document.querySelector("canvas");
-          if (c) fitCanvas(c);
-        }, { passive:true });
-      }
+      adoptCanvas();
     })();
 
-    /* Fix 2: Make the start overlay appear once scripts are loaded and a canvas exists */
-    (function(){
-      const pre = document.getElementById("preloader");
-      const overlay = document.getElementById("startOverlay");
-      const startBtn = document.getElementById("startBtn");
-      const muteBtn = document.getElementById("muteBtn");
-      const restartBtn = document.getElementById("restartBtn");
-
-      function hidePreloaderSoon(){
-        if (!pre) return;
-        setTimeout(() => {
-          pre.style.display = "none";
-        }, 120);
-      }
-
-      function showStart(){
-        if (!overlay) return;
-        overlay.classList.add("ready");
-      }
-
-      function hideStart(){
-        if (!overlay) return;
-        overlay.classList.remove("ready");
-      }
-
-      function tryHidePreloaderWhenCanvasAppears(){
-        const check = () => {
-          const c = document.querySelector("canvas");
-          if (c){
-            hidePreloaderSoon();
-            showStart();
-            return true;
-          }
-          return false;
-        };
-        if (check()) return;
-        const mo = new MutationObserver(() => { if (check()) mo.disconnect(); });
-        mo.observe(document.documentElement, { childList:true, subtree:true });
-      }
-
-      tryHidePreloaderWhenCanvasAppears();
-
-      if (startBtn){
-        startBtn.addEventListener("click", () => {
-          hideStart();
-          const surface = document.getElementById("gameScreen");
-          if (surface){
-            try { surface.focus({ preventScroll:true }); } catch(e) { try { surface.focus(); } catch(_) {} }
-          }
-        });
-      }
-
-      if (muteBtn){
-        muteBtn.addEventListener("click", () => {
-          try{
-            const aud = Array.from(document.querySelectorAll("audio, video"));
-            aud.forEach(a => { a.muted = !a.muted; });
-          }catch(e){}
-        });
-      }
-
-      if (restartBtn){
-        restartBtn.addEventListener("click", () => {
-          location.reload();
-        });
-      }
-    })();
-
-    /* Static Menu hide for 3 minutes */
+    // Static Menu show/hide with 3 minute return
     (function(){
       const menu = document.getElementById("staticMenu");
       const btn  = document.getElementById("closeStaticMenu");
@@ -486,7 +477,7 @@
       if (btn) btn.onclick = hideFor3m;
     })();
 
-    /* Rotator: Google Form → Discord → Instagram */
+    // Rotator: Google Form -> Discord -> Instagram
     (function(){
       const wrap = document.getElementById("staticSlideMenu");
       const a    = document.getElementById("staticSlideLink");
@@ -507,7 +498,6 @@
         alt:  "StaticQuasar931 Instagram",
         link: "https://www.instagram.com/freeschoolgamepage/"
       };
-
       const ROTATION = [FORM, DISCORD, INSTA];
       ROTATION.forEach(o => { const p = new Image(); p.src = o.src; });
 
@@ -540,12 +530,11 @@
       })();
     })();
 
-    /* y + u + i toggle Visual SEO */
+    // Keyboard secret toggle: y + u + i to toggle all Visual SEO
     (function(){
       const idsToToggle = ["staticMenu", "staticSlideMenu"];
       let seq = [];
       const target = ["y","u","i"];
-
       function toggle(){
         idsToToggle.forEach(id=>{
           const el = document.getElementById(id);
@@ -554,7 +543,6 @@
           el.style.display = isHidden ? (id === "staticMenu" ? "flex" : "block") : "none";
         });
       }
-
       window.addEventListener("keydown", (e)=>{
         const active = document.activeElement;
         const tag = active ? active.tagName.toLowerCase() : "";
@@ -568,7 +556,7 @@
     })();
   </script>
 
-  <!-- Game scripts (original order) -->
+  <!-- Game scripts (keep original order) -->
   <script src="js/AssetManager.js"></script>
   <script src="js/CameraSystem.js"></script>
   <script src="js/EnemyAI.js"></script>
@@ -582,9 +570,9 @@
 
   <!-- Hidden SEO block -->
   <div class="seo-hidden" aria-hidden="true">
-    <h1>Five Nights at Epstein&#39;s (FNAE) Unblocked Web Version by StaticQuasar931</h1>
+    <h1>FNAE Unblocked Web Version by StaticQuasar931</h1>
     <p>
-      Five Nights at Epstein&#39;s (FNAE) is a browser horror game web version built to run on Chromebook and desktop. This page is designed to work at school, work, or anywhere with a clean full-screen fit that automatically resizes to your device without relying on any fullscreen APIs. If loading seems stuck on a school network, refresh and try again because large assets like audio and images can be delayed. This is part of StaticQuasar931 unblocked games, also known as static, staticquasar, staticquasar931, static 931, staticq, staticq931, and 931. Search phrases include fnae unblocked, five nights at epstein&#39;s unblocked, fnae working at school, fnae school safe, horror game unblocked, scary game unblocked, browser game unblocked, and chromebook game unblocked. Keyword variations include game and g@me, games and g@mes, and unblocked spelled as unbl0cked.
+      This is a browser game web version built to run on Chromebook and desktop. This page is designed to work at school, work, or anywhere with a clean full-screen fit that automatically resizes to your device without relying on fullscreen APIs. If loading seems stuck on a school network, refresh and try again because large assets like audio and images can be delayed. This is part of StaticQuasar931 unblocked games, also known as static, staticquasar, staticquasar931, static 931, staticq, staticq931, and 931. Search phrases include fnae unblocked, fnae working at school, school-safe unblocked game, browser game unblocked, chromebook game unblocked. Keyword variations include game and g@me, games and g@mes, and unblocked spelled as unbl0cked.
     </p>
     <ul>
       <li><a href="https://sites.google.com/view/staticquasar931/gm3z">More Unblocked Games by Static</a></li>
