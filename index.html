@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-  <!-- SEO -->
   <title>Five Nights At Epstein&#39;s (FNAE) Unblocked Web Version | StaticQuasar931</title>
   <meta name="description" content="Play Five Nights At Epstein&#39;s (FNAE) unblocked in your browser. Works at school, work, or anywhere. More unblocked games by StaticQuasar931." />
   <meta name="keywords" content="five nights at epstein's unblocked,fnae unblocked,fnae game unblocked,five nights at epstein's game,fnae web version,fnae html5,fnae browser,fnae working at school,fnae school,fnae school-safe,horror game unblocked,scary game unblocked,static,staticquasar,staticquasar931,static 931,staticq,staticq931,931,unblocked,unbl0cked,games,g@mes,game,g@me,browser game,chromebook game,play at school" />
@@ -12,7 +11,6 @@
   <meta name="theme-color" content="#000000" />
   <link rel="canonical" href="https://staticquasar931.github.io/Five-Night-s-at-Epstein-s-FNAE-/" />
 
-  <!-- Social -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Five Nights At Epstein&#39;s (FNAE) Unblocked Web Version | StaticQuasar931" />
   <meta property="og:description" content="Play FNAE unblocked in your browser. Works at school, work, or anywhere. More unblocked games by StaticQuasar931." />
@@ -22,9 +20,9 @@
   <meta name="twitter:title" content="Five Nights At Epstein&#39;s (FNAE) Unblocked Web Version | StaticQuasar931" />
   <meta name="twitter:description" content="Play FNAE unblocked in your browser. Works at school, work, or anywhere." />
   <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" />
+
   <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" />
 
-  <!-- Schema.org -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -41,16 +39,13 @@
   }
   </script>
 
-  <!-- GitHub Pages project base -->
   <base href="/Five-Night-s-at-Epstein-s-FNAE-/" />
-
-  <!-- Your stylesheet -->
   <link rel="stylesheet" href="style.css" />
 
   <style>
     html, body { width:100%; height:100%; margin:0; padding:0; background:#000; overflow:hidden; }
 
-    /* Warning popup overlay (game loads behind it) */
+    /* Real popup overlay (game still loads behind it) */
     #warnOverlay{
       position:fixed;
       inset:0;
@@ -91,16 +86,17 @@
     .wbtn.danger{ background:rgba(255,70,70,.14); border-color:rgba(255,70,70,.35); }
     .wbtn.ghost{ background:rgba(255,255,255,.04); }
 
-    /* Main menu small branding helpers (keeps original credits, smaller) */
+    /* Keep your menu background path base-friendly (no leading slash) */
+    #main-menu{ background: url("assets/images/menubackground.png") center/cover; }
+
+    /* Menu branding lines (small, non-desync) */
     #main-menu .hosted-by{
-      margin-top:10px;
-      font-size:14px;
+      margin-top:8px;
+      font-size:13px;
       color:#cfe8ff;
       font-family:'Courier New', monospace;
-      font-weight:bold;
-      letter-spacing:1px;
-      z-index:102;
-      position:relative;
+      font-weight:800;
+      letter-spacing:.6px;
     }
     #main-menu .hosted-by a{
       color:#5ee1ff;
@@ -112,27 +108,17 @@
       font-size:12px;
       color:#a9a9a9;
       font-family:'Courier New', monospace;
-      letter-spacing:.5px;
-      z-index:102;
-      position:relative;
+      letter-spacing:.4px;
     }
     #main-menu .reset-hint{
       margin-top:8px;
       font-size:12px;
       color:#888;
       font-family:'Courier New', monospace;
-      z-index:102;
-      position:relative;
     }
 
-    /* Force menu background to use base href correctly (no leading slash) */
-    #main-menu{
-      background: url("assets/images/menubackground.png") center/cover;
-    }
-
-    /* Visual SEO standard styles (minimal, your existing style can override) */
+    /* Visual SEO standard */
     :root{
-      --brand:#5ee1ff;
       --glow:0 0 12px rgba(94,225,255,.65), 0 0 32px rgba(155,255,183,.35);
       --shadow:0 10px 30px rgba(0,0,0,.4);
     }
@@ -212,7 +198,7 @@
   <!-- https://sites.google.com/view/staticquasar931/gm3z -->
   <!-- perf notes (cache keys / internal refs): 38fh3b87ejeef07t9j | 38dfh3hdbs8t7a4t6iecjqeusaesfa0r79t391j -->
 
-  <!-- Warning + credit gate (game loads behind it) -->
+  <!-- Trigger warning popup (game loads behind it) -->
   <div id="warnOverlay" role="dialog" aria-modal="true" aria-label="Warning">
     <div id="warnCard">
       <h1 id="warnTitle">Warning + Credit</h1>
@@ -220,11 +206,11 @@
         <p><b>This game is not made by StaticQuasar931.</b></p>
         <p><b>Content warning:</b> it may be upsetting. <b>Epstein&#39;s acts are not a joke.</b></p>
         <p><b>None of the photos are graphic.</b></p>
-        <p>This is hosted for <b>entertainment</b>.</p>
+        <p>If you want something lighter, you can browse other games instead.</p>
       </div>
       <div id="warnButtons">
         <button class="wbtn ghost" id="warnDontShow" type="button">Don&#39;t show again</button>
-        <button class="wbtn danger" id="warnExit" type="button">Leave</button>
+        <button class="wbtn danger" id="warnExit" type="button">Check out other games</button>
         <button class="wbtn primary" id="warnContinue" type="button">Continue</button>
       </div>
     </div>
@@ -248,12 +234,8 @@
   </div>
 
   <div id="game-container">
-    <!-- Main game screen -->
     <div id="game-screen">
-      <!-- Provide both ids so different JS versions still work -->
-      <img id="currentScene" src="" alt="" style="display:none;" />
       <img id="current-scene" src="" alt="" style="display:none;" />
-
       <div id="hotspots"></div>
 
       <div id="ui-overlay">
@@ -271,53 +253,40 @@
       </div>
     </div>
 
-    <!-- Camera panel -->
     <div id="camera-panel" class="hidden">
-      <!-- Alias ids some scripts might expect -->
-      <div id="cameraPanel" class="hidden" aria-hidden="true"></div>
-
       <div id="current-cam-label">CAM 11</div>
       <div id="camera-error-label">ERR</div>
 
       <div id="character-overlay"></div>
 
-      <!-- Provide multiple ids for grid -->
       <div id="camera-grid"></div>
-      <div id="grid" aria-hidden="true"></div>
-
       <button id="shock-hawking-btn" type="button">ELECTROCUTE</button>
       <button id="play-sound-btn" type="button">PLAY SOUND</button>
 
-      <!-- Camera static video (add mp4 fallback, do not autoplay) -->
       <video id="camera-static-video" loop muted playsinline preload="none">
         <source src="assets/vedio/202512191935.webm" type="video/webm" />
         <source src="assets/vedio/202512191935.mp4" type="video/mp4" />
       </video>
     </div>
 
-    <!-- Cutscene -->
     <div id="cutscene" class="hidden">
       <img src="assets/images/cutscene.png" alt="Cutscene" />
       <div class="cutscene-hint">Click to continue...</div>
     </div>
 
-    <!-- Night intro (provide both ids for different JS versions) -->
     <div id="night-intro" class="hidden">
       <div id="night-intro-text">NIGHT 1</div>
-      <div id="nightIntroText" class="hidden" aria-hidden="true">NIGHT 1</div>
-      <div id="nightIntro" class="hidden" aria-hidden="true"></div>
     </div>
 
-    <!-- Main menu (updated branding inside menu) -->
+    <!-- Main menu (put branding back in a stable order) -->
     <div id="main-menu">
       <img id="star-icon" class="hidden" src="assets/images/star.png" alt="Star" />
       <img id="star-icon-2" class="hidden" src="assets/images/star.png" alt="Star 2" />
+      <h1>FIVE<br />NIGHTS<br />AT<br />EPSTEIN&#39;S</h1>
 
-      <h1>FIVE NIGHTS<br />AT EPSTEIN&#39;S</h1>
-
-      <button id="start-game" type="button">START</button>
+      <button id="start-game" type="button">NEW GAME</button>
       <button id="continue-game" class="hidden" type="button">CONTINUE</button>
-      <button id="special-night-btn" class="hidden" type="button">SPECIAL NIGHT</button>
+      <button id="special-night-btn" class="hidden" type="button">EPSTEIN&#39;S SPECIAL NIGHT</button>
 
       <div class="hosted-by">
         Hosted by
@@ -327,22 +296,17 @@
       <div class="credits-small">© EVAN PRODUCTIONS | HTML5 remake by fivenightsatepsteins.org</div>
       <div class="reset-hint">If something glitches, refresh.</div>
 
-      <div class="version">WEB v1.1.5</div>
+      <div class="version">v1.1.5</div>
     </div>
 
-    <!-- Static noise canvases (support both id conventions) -->
-    <canvas id="staticCanvas"></canvas>
     <canvas id="static-canvas"></canvas>
 
-    <!-- Menu music -->
     <audio id="menu-music" loop preload="auto">
       <source src="assets/sounds/music3.ogg" type="audio/ogg" />
       <source src="assets/sounds/music3.mp3" type="audio/mpeg" />
     </audio>
 
-    <!-- Game over -->
     <div id="game-over" class="hidden">
-      <!-- Static background video (fallback, do not depend on autoplay) -->
       <video id="game-over-static" loop muted playsinline preload="none">
         <source src="assets/vedio/202512191935.webm" type="video/webm" />
         <source src="assets/vedio/202512191935.mp4" type="video/mp4" />
@@ -356,7 +320,6 @@
       </div>
     </div>
 
-    <!-- Tutorial -->
     <div id="tutorial-overlay" class="hidden">
       <div id="tutorial-content">
         <h2>DEFEND YOURSELF AGAINST EPSTEIN</h2>
@@ -389,61 +352,6 @@
   <script>
     window.onbeforeunload = () => "Are you sure you want to leave? Your session may be interrupted.";
 
-    function urlFromBase(path){
-      try { return new URL(path, document.baseURI).href; } catch (e) { return path; }
-    }
-
-    (function fixMenuBgFallback(){
-      const el = document.getElementById("main-menu");
-      if (!el) return;
-      const bg = `url("${urlFromBase("assets/images/menubackground.png")}")`;
-      if (!el.style.backgroundImage || el.style.backgroundImage === "none") {
-        el.style.backgroundImage = bg;
-        el.style.backgroundPosition = "center";
-        el.style.backgroundSize = "cover";
-      }
-    })();
-
-    (function ensureIdAliases(){
-      const currentScene = document.getElementById("currentScene");
-      const currentSceneDash = document.getElementById("current-scene");
-      if (currentScene && currentSceneDash && currentScene !== currentSceneDash) {
-        currentSceneDash.src = currentScene.src || "";
-      }
-
-      const grid = document.getElementById("camera-grid");
-      const gridAlias = document.getElementById("grid");
-      if (grid && gridAlias) {
-        gridAlias.style.display = "none";
-        if (!gridAlias.hasChildNodes()) {
-          gridAlias.setAttribute("data-alias-for", "camera-grid");
-        }
-      }
-    })();
-
-    (function fitCanvases(){
-      function fitCanvas(c){
-        if (!c) return;
-        const dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
-        const w = Math.max(1, Math.floor(window.innerWidth));
-        const h = Math.max(1, Math.floor(window.innerHeight));
-        c.style.width = "100vw";
-        c.style.height = "100vh";
-        const tw = Math.floor(w * dpr);
-        const th = Math.floor(h * dpr);
-        if (c.width !== tw) c.width = tw;
-        if (c.height !== th) c.height = th;
-      }
-      function fitAll(){
-        fitCanvas(document.getElementById("staticCanvas"));
-        fitCanvas(document.getElementById("static-canvas"));
-      }
-      window.addEventListener("resize", fitAll, { passive:true });
-      const mo = new MutationObserver(fitAll);
-      mo.observe(document.documentElement, { childList:true, subtree:true });
-      fitAll();
-    })();
-
     (function warnPopup(){
       const KEY = "sq931_fnae_warn_hide";
       const overlay = document.getElementById("warnOverlay");
@@ -474,6 +382,27 @@
       if (bDont) bDont.addEventListener("click", () => { localStorage.setItem(KEY, "1"); hide(); nudgeAudioGesture(); });
       if (bExit) bExit.addEventListener("click", () => { window.location.href = "https://sites.google.com/view/staticquasar931/gm3z"; });
       if (bCont) bCont.addEventListener("click", () => { hide(); nudgeAudioGesture(); });
+    })();
+
+    (function fitCanvas(){
+      function fit(c){
+        if (!c) return;
+        const dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
+        const w = Math.max(1, Math.floor(window.innerWidth));
+        const h = Math.max(1, Math.floor(window.innerHeight));
+        c.style.width = "100vw";
+        c.style.height = "100vh";
+        const tw = Math.floor(w * dpr);
+        const th = Math.floor(h * dpr);
+        if (c.width !== tw) c.width = tw;
+        if (c.height !== th) c.height = th;
+      }
+      const c = document.getElementById("static-canvas");
+      const fitAll = () => fit(c);
+      window.addEventListener("resize", fitAll, { passive:true });
+      const mo = new MutationObserver(fitAll);
+      mo.observe(document.documentElement, { childList:true, subtree:true });
+      fitAll();
     })();
 
     (function staticMenuHide3m(){
@@ -579,7 +508,6 @@
     })();
   </script>
 
-  <!-- Game scripts (keep your load order) -->
   <script src="js/GameState.js"></script>
   <script src="js/AssetManager.js"></script>
   <script src="js/UIManager.js"></script>
@@ -591,7 +519,6 @@
   <script src="js/Game.js"></script>
   <script src="js/main.js"></script>
 
-  <!-- Hidden SEO block -->
   <div class="seo-hidden" aria-hidden="true">
     <h1>Five Nights At Epstein&#39;s (FNAE) Unblocked Web Version</h1>
     <p>
