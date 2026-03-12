@@ -203,47 +203,47 @@ class EnemyAI {
 
     // 每个摄像头使用的角色图片（根据距离办公室远近）
     this.characterImages = {
-      'cam11': '/assets/images/enemyep1.png',
-      'cam10': '/assets/images/ep1.png',
-      'cam1': '/assets/images/ep4.png',
-      'cam9': '/assets/images/enemyep1.png',
-      'cam8': '/assets/images/enemyep1.png',
-      'cam7': '/assets/images/enemyep1.png',
-      'cam6': '/assets/images/enemyep1.png',
-      'cam5': '/assets/images/enemyep4.png',
-      'cam4': '/assets/images/ep1.png',
-      'cam3': '/assets/images/ep4.png',
-      'cam2': '/assets/images/enemyep1.png',
+      'cam11': 'assets/images/enemyep1.png',
+      'cam10': 'assets/images/ep1.png',
+      'cam1': 'assets/images/ep4.png',
+      'cam9': 'assets/images/enemyep1.png',
+      'cam8': 'assets/images/enemyep1.png',
+      'cam7': 'assets/images/enemyep1.png',
+      'cam6': 'assets/images/enemyep1.png',
+      'cam5': 'assets/images/enemyep4.png',
+      'cam4': 'assets/images/ep1.png',
+      'cam3': 'assets/images/ep4.png',
+      'cam2': 'assets/images/enemyep1.png',
     };
 
     // Night 6 专用图片（带电眼）
     this.characterImagesNight6 = {
-      'cam11': '/assets/images/enemyep1_night6.png',
-      'cam10': '/assets/images/ep1_night6.png',
-      'cam1': '/assets/images/ep4_night6.png',
-      'cam9': '/assets/images/enemyep1_night6.png',
-      'cam8': '/assets/images/enemyep1_night6.png',
-      'cam7': '/assets/images/enemyep1_night6.png',
-      'cam6': '/assets/images/enemyep1_night6.png',
-      'cam5': '/assets/images/enemyep4_night6.png',
-      'cam4': '/assets/images/ep1_night6.png',
-      'cam3': '/assets/images/ep4_night6.png',
-      'cam2': '/assets/images/enemyep1_night6.png',
+      'cam11': 'assets/images/enemyep1_night6.png',
+      'cam10': 'assets/images/ep1_night6.png',
+      'cam1': 'assets/images/ep4_night6.png',
+      'cam9': 'assets/images/enemyep1_night6.png',
+      'cam8': 'assets/images/enemyep1_night6.png',
+      'cam7': 'assets/images/enemyep1_night6.png',
+      'cam6': 'assets/images/enemyep1_night6.png',
+      'cam5': 'assets/images/enemyep4_night6.png',
+      'cam4': 'assets/images/ep1_night6.png',
+      'cam3': 'assets/images/ep4_night6.png',
+      'cam2': 'assets/images/enemyep1_night6.png',
     };
 
     // 特朗普的图片配置（使用绝对路径）
     this.trumpImages = {
-      'cam10': '/assets/images/trump3.png',
-      'cam11': '/assets/images/trump3.png',
-      'cam9': '/assets/images/trump.png',
-      'cam8': '/assets/images/trump5.png',
-      'cam7': '/assets/images/trump3.png',
-      'cam6': '/assets/images/trump3.png',
-      'cam5': '/assets/images/trump2.png',
-      'cam1': '/assets/images/trump4.png',
-      'cam2': '/assets/images/trump4.png',
-      'cam3': '/assets/images/trump2.png',
-      'cam4': '/assets/images/trump3.png',
+      'cam10': 'assets/images/trump3.png',
+      'cam11': 'assets/images/trump3.png',
+      'cam9': 'assets/images/trump.png',
+      'cam8': 'assets/images/trump5.png',
+      'cam7': 'assets/images/trump3.png',
+      'cam6': 'assets/images/trump3.png',
+      'cam5': 'assets/images/trump2.png',
+      'cam1': 'assets/images/trump4.png',
+      'cam2': 'assets/images/trump4.png',
+      'cam3': 'assets/images/trump2.png',
+      'cam4': 'assets/images/trump3.png',
     };
 
     // 定义移动路径图（根据地图连接关系，只能向前移动）
@@ -1870,3 +1870,4 @@ class EnemyAI {
   }
 
 }
+
